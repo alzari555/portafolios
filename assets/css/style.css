@@ -531,12 +531,14 @@ a:hover {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  padding: 1.2rem 2.5rem;
+  height: 60px;
+  padding: 0 2.5rem;
   border-bottom: 1px solid var(--border-color);
   position: sticky;
   top: 0;
   background: #ffffff;
-  z-index: 5;
+  z-index: 10;
+  box-sizing: border-box;
 }
 
 .close-btn {
@@ -565,6 +567,7 @@ a:hover {
   grid-template-columns: 1.3fr 1fr;
   gap: 3rem;
   padding: 3rem 2.5rem;
+  align-items: start;
 }
 
 .modal-image-col {
@@ -584,6 +587,13 @@ a:hover {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  align-self: start;
+  position: sticky;
+  top: calc(60px + 1.5rem);
+  max-height: calc(90vh - 60px - 3rem);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-color) transparent;
 }
 
 .modal-title {
@@ -792,10 +802,23 @@ a:hover {
    RESPONSIVIDAD Y DISPOSITIVOS MÓVILES
    ========================================================================== */
 @media (max-width: 860px) {
+  .modal-header-bar {
+    height: 52px;
+    padding: 0 1.5rem;
+  }
+
   .modal-grid {
     grid-template-columns: 1fr;
     gap: 2rem;
     padding: 2rem 1.5rem;
+    align-items: stretch;
+  }
+
+  .modal-text-col {
+    order: -1;
+    position: static;
+    max-height: none;
+    overflow-y: visible;
   }
 }
 

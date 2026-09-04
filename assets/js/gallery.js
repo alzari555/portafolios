@@ -54,6 +54,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       modal.style.opacity = '';
       modal.style.transform = '';
       if (modalImages) modalImages.innerHTML = '';
+      const modalInner = modal.querySelector('.modal-inner');
+      if (modalInner) modalInner.scrollTop = 0;
+      modal.scrollTop = 0;
     }, 200);
   }
 
@@ -347,6 +350,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   async function openModal(item, timestamp, itemIndex) {
     if (!modal) return;
 
+    // Resetear siempre la posicion de scroll al tope (primera diapositiva / imagen)
+    const modalInner = modal.querySelector('.modal-inner');
+    if (modalInner) modalInner.scrollTop = 0;
+    modal.scrollTop = 0;
+
     modalTitle.textContent = item.title;
     modalDesc.textContent = item.description || '';
 
@@ -473,6 +481,12 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
 
       modal.showModal();
+      if (modalInner) modalInner.scrollTop = 0;
+      modal.scrollTop = 0;
+      requestAnimationFrame(() => {
+        if (modalInner) modalInner.scrollTop = 0;
+        modal.scrollTop = 0;
+      });
 
       try {
         const pdfjs = await loadPdfJs();
@@ -511,6 +525,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (existingPdfLink) existingPdfLink.remove();
       }
       modal.showModal();
+      if (modalInner) modalInner.scrollTop = 0;
+      modal.scrollTop = 0;
+      requestAnimationFrame(() => {
+        if (modalInner) modalInner.scrollTop = 0;
+        modal.scrollTop = 0;
+      });
     }
   }
 
