@@ -106,16 +106,39 @@ document.addEventListener('DOMContentLoaded', async () => {
     return null;
   }
 
-  // Helper para parsear proporciones de recorte tipo "16:9", "1:1", "9:16", "4:5", "21:9", "4:3"
-  function parseCropRatio(cropStr, fallbackRatio = 16 / 9) {
-    if (!cropStr) return fallbackRatio;
-    const parts = String(cropStr).trim().split(':');
+  // Cache en memoria para proporciones nativas de video Vimeo detectadas
+  const vimeoRatioCache = new Map();
+
+  // Helper para parsear proporciones tipo "1:1", "16:9", "9:16", "3:4", "4:5", "21:9"
+  function parseAspect(aspectStr, fallbackRatio = 16 / 9) {
+    if (!aspectStr || aspectStr === 'auto') return fallbackRatio;
+    const parts = String(aspectStr).trim().split(':');
     if (parts.length === 2) {
       const num = parseFloat(parts[0]);
       const den = parseFloat(parts[1]);
       if (num && den) return num / den;
     }
     return fallbackRatio;
+  }
+
+  // Consulta asíncrona de dimensiones nativas a la API pública oEmbed de Vimeo (soporta CORS)
+  async function getVimeoAspect(vimeoId) {
+    if (!vimeoId) return 16 / 9;
+    if (vimeoRatioCache.has(vimeoId)) return vimeoRatioCache.get(vimeoId);
+    try {
+      const res = await fetch(`https://vimeo.com/api/oembed.json?url=https://vimeo.com/${vimeoId}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.width && data.height) {
+          const ratio = data.width / data.height;
+          vimeoRatioCache.set(vimeoId, ratio);
+          return ratio;
+        }
+      }
+    } catch (e) {
+      // Ignorar fallos de red silenciosamente y usar fallback
+    }
+    return 16 / 9;
   }
 
   // --------------------------------------------------------------------------
@@ -182,6 +205,25 @@ document.addEventListener('DOMContentLoaded', async () => {
       div.dataset.index = index;
       if (hasVimeo) {
         div.dataset.hasVimeo = 'true';
+        const configuredAspect = item.video_aspect || 'auto';
+        const defaultRatio = format === 'portrait' ? 0.75 : (format === 'square' ? 1.0 : (16 / 9));
+        const initialRatio = (configuredAspect !== 'auto')
+          ? parseAspect(configuredAspect, defaultRatio)
+          : defaultRatio;
+
+        div.dataset.videoRatio = initialRatio;
+        div.dataset.videoFit = item.video_fit || 'cover';
+
+        // Si se configuró en 'auto', consultar resolución real en Vimeo oEmbed
+        if (configuredAspect === 'auto') {
+          getVimeoAspect(vimeoData.id).then(detectedRatio => {
+            if (detectedRatio && Math.abs(detectedRatio - parseFloat(div.dataset.videoRatio)) > 0.02) {
+              div.dataset.videoRatio = detectedRatio;
+              resizeGridItem(div, null);
+              updateVimeoSizing(div);
+            }
+          });
+        }
       }
 
       div.innerHTML = `
@@ -261,9 +303,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (item.classList.contains('format-square')) {
       targetHeight = gridColWidth;
     } else if (item.classList.contains('format-portrait')) {
-      targetHeight = gridColWidth * (16 / 9); // 9:16 vertical
+      const ratio = parseFloat(item.dataset.videoRatio) || (3 / 4);
+      targetHeight = gridColWidth / ratio;
     } else if (item.classList.contains('format-landscape')) {
-      targetHeight = gridColWidth * (9 / 16); // 16:9 horizontal
+      const ratio = parseFloat(item.dataset.videoRatio) || (16 / 9);
+      targetHeight = gridColWidth / (ratio >= 1.2 ? ratio : (16 / 9));
     } else if (img && img.naturalWidth > 0 && img.naturalHeight > 0) {
       targetHeight = gridColWidth / (img.naturalWidth / img.naturalHeight);
     } else {
@@ -278,7 +322,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-  // Ajuste de escala y encuadre para object-fit cover en iframes de Vimeo
+  // Ajuste de escala y encuadre para eliminar bordes negros en iframes de Vimeo
   function updateVimeoSizing(item) {
     const iframe = item.querySelector('.vimeo-wrapper iframe');
     const wrapper = item.querySelector('.image-wrapper');
@@ -289,16 +333,30 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!w || !h) return;
 
     const containerRatio = w / h;
-    const isPortrait = item.classList.contains('format-portrait');
-    const sourceRatio = isPortrait ? (9 / 16) : (16 / 9);
+    const sourceRatio = parseFloat(item.dataset.videoRatio) || (16 / 9);
+    const fit = item.dataset.videoFit || 'cover';
 
     let finalW, finalH;
-    if (containerRatio > sourceRatio) {
-      finalW = w;
-      finalH = w / sourceRatio;
+    if (fit === 'contain') {
+      if (containerRatio > sourceRatio) {
+        finalH = h;
+        finalW = h * sourceRatio;
+      } else {
+        finalW = w;
+        finalH = w / sourceRatio;
+      }
     } else {
-      finalH = h;
-      finalW = h * sourceRatio;
+      // cover: rellena al 100% el contenedor sin ninguna franja negra
+      if (containerRatio > sourceRatio) {
+        finalW = w;
+        finalH = w / sourceRatio;
+      } else {
+        finalH = h;
+        finalW = h * sourceRatio;
+      }
+      // Margen de seguridad para prevenir líneas subpíxel en bordes
+      finalW += 2;
+      finalH += 2;
     }
 
     iframe.style.width = `${Math.ceil(finalW)}px`;
@@ -349,9 +407,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Si tiene video de Vimeo, inyectamos el reproductor con audio en el modal
     const vimeoData = parseVimeo(item.vimeo_url);
     if (vimeoData && vimeoData.id) {
-      const formatClass = `video-format-${item.format || 'landscape'}`;
+      const configuredAspect = item.video_aspect || 'auto';
+      const defaultModalRatio = (item.format === 'portrait' ? 0.75 : (item.format === 'square' ? 1.0 : (16 / 9)));
+      const videoRatio = (configuredAspect !== 'auto')
+        ? parseAspect(configuredAspect, defaultModalRatio)
+        : (vimeoRatioCache.get(vimeoData.id) || defaultModalRatio);
+
+      const maxWidthStyle = videoRatio < 1
+        ? `calc(75vh * ${videoRatio})`
+        : (videoRatio === 1 ? '68vh' : '100%');
+
       imagesHtml += `
-        <div class="modal-video-container ${formatClass}">
+        <div class="modal-video-container" style="aspect-ratio: ${videoRatio}; max-width: ${maxWidthStyle}; margin-left: auto; margin-right: auto;">
           <iframe src="https://player.vimeo.com/video/${vimeoData.id}?autoplay=1&title=0&byline=0&portrait=0${vimeoData.hash ? `&h=${vimeoData.hash}` : ''}"
                   frameborder="0"
                   allow="autoplay; fullscreen; picture-in-picture"
@@ -374,10 +441,19 @@ document.addEventListener('DOMContentLoaded', async () => {
         const subVimeo = parseVimeo(g.vimeo_url);
         if (subVimeo && subVimeo.id) {
           const caption = g.title || g.caption || `Sub-video ${String(gIdx + 1).padStart(2, '0')}`;
+          const subAspect = g.video_aspect || 'auto';
+          const subRatio = (subAspect !== 'auto')
+            ? parseAspect(subAspect, 16 / 9)
+            : (vimeoRatioCache.get(subVimeo.id) || 16 / 9);
+
+          const maxWidthStyle = subRatio < 1
+            ? `calc(75vh * ${subRatio})`
+            : (subRatio === 1 ? '68vh' : '100%');
+
           imagesHtml += `
             <div class="modal-sub-video-item">
-              <span class="slide-caption">${escapeHtml(caption)}</span>
-              <div class="modal-video-container">
+              ${caption ? `<span class="slide-caption">${escapeHtml(caption)}</span>` : ''}
+              <div class="modal-video-container" style="aspect-ratio: ${subRatio}; max-width: ${maxWidthStyle}; margin-left: auto; margin-right: auto;">
                 <iframe src="https://player.vimeo.com/video/${subVimeo.id}?autoplay=0&title=0&byline=0&portrait=0${subVimeo.hash ? `&h=${subVimeo.hash}` : ''}"
                         frameborder="0"
                         allow="autoplay; fullscreen; picture-in-picture"
@@ -408,10 +484,19 @@ document.addEventListener('DOMContentLoaded', async () => {
         const subVimeo = parseVimeo(sv.vimeo_url);
         if (subVimeo && subVimeo.id) {
           const caption = sv.title || `Sub-video ${String(svIdx + 1).padStart(2, '0')}`;
+          const subAspect = sv.video_aspect || 'auto';
+          const subRatio = (subAspect !== 'auto')
+            ? parseAspect(subAspect, 16 / 9)
+            : (vimeoRatioCache.get(subVimeo.id) || 16 / 9);
+
+          const maxWidthStyle = subRatio < 1
+            ? `calc(75vh * ${subRatio})`
+            : (subRatio === 1 ? '68vh' : '100%');
+
           imagesHtml += `
             <div class="modal-sub-video-item">
               <span class="slide-caption">${escapeHtml(caption)}</span>
-              <div class="modal-video-container">
+              <div class="modal-video-container" style="aspect-ratio: ${subRatio}; max-width: ${maxWidthStyle}; margin-left: auto; margin-right: auto;">
                 <iframe src="https://player.vimeo.com/video/${subVimeo.id}?autoplay=0&title=0&byline=0&portrait=0${subVimeo.hash ? `&h=${subVimeo.hash}` : ''}"
                         frameborder="0"
                         allow="autoplay; fullscreen; picture-in-picture"

@@ -30,6 +30,8 @@ collections:
               - {label: "Imagen Principal (Opcional si usas Video o PDF)", name: "image", widget: "image", required: false}
               - {label: "Forma de la imagen (Solo formato cuadrado)", name: "image_shape", widget: "select", options: [{label: "Esquina truncada", value: "quarter-circle-tr"}, {label: "Forma orgánica (Blob)", value: "blob-shape"}, {label: "Sin efecto", value: "none"}], default: "none", required: false}
               - {label: "Video de Vimeo (URL o ID)", name: "vimeo_url", widget: "string", required: false, hint: "Ej: https://vimeo.com/1109868960 o ID numérico"}
+              - {label: "Resolución / Proporción del Video", name: "video_aspect", widget: "select", options: [{label: "Auto (Detectar automáticamente de Vimeo)", value: "auto"}, {label: "1:1 Cuadrado (240x240, 1080x1080)", value: "1:1"}, {label: "16:9 Panorámico horizontal (1920x1080)", value: "16:9"}, {label: "9:16 Vertical completo (Reels / TikTok)", value: "9:16"}, {label: "3:4 Vertical clásico (240x320, 1080x1440)", value: "3:4"}, {label: "4:5 Vertical Instagram / Editorial", value: "4:5"}, {label: "21:9 Cinemascópico Ultra-ancho", value: "21:9"}], default: "auto", required: false}
+              - {label: "Ajuste del Video en Tarjeta", name: "video_fit", widget: "select", options: [{label: "Relleno completo (cero bordes negros / recorte proporcional)", value: "cover"}, {label: "Ajuste completo (muestra todo el video sin recortar)", value: "contain"}], default: "cover", required: false}
               - {label: "Presentación PDF (Extrae diapositivas automáticamente)", name: "pdf_file", widget: "file", required: false}
               - label: "Galería Adicional (Imágenes y Sub-videos en Modal)"
                 name: "gallery"
@@ -38,4 +40,5 @@ collections:
                 fields:
                   - {label: "Imagen Extra (Opcional)", name: "image", widget: "image", required: false}
                   - {label: "Sub-video de Vimeo (URL o ID - Opcional)", name: "vimeo_url", widget: "string", required: false, hint: "Ej: https://vimeo.com/1084537 o ID numérico"}
+                  - {label: "Resolución del Sub-video", name: "video_aspect", widget: "select", options: [{label: "Auto (Detectar de Vimeo)", value: "auto"}, {label: "1:1 Cuadrado", value: "1:1"}, {label: "16:9 Panorámico", value: "16:9"}, {label: "9:16 Vertical", value: "9:16"}, {label: "3:4 Vertical", value: "3:4"}, {label: "4:5 Vertical", value: "4:5"}], default: "auto", required: false}
                   - {label: "Título / Pie de este elemento (Opcional)", name: "title", widget: "string", required: false}
