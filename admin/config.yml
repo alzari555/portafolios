@@ -25,8 +25,8 @@ collections:
             widget: "list"
             fields:
               - {label: "Título", name: "title", widget: "string"}
-              - {label: "Descripción", name: "description", widget: "text"}
-              - {label: "Imagen Principal", name: "image", widget: "image"}
+              - {label: "Descripción", name: "description", widget: "text", required: false}
+              - {label: "Imagen Principal (Opcional si usas Video o PDF)", name: "image", widget: "image", required: false}
               - {label: "Formato en Grilla", name: "format", widget: "select", options: [{label: "Cuadrada", value: "square"}, {label: "Vertical", value: "portrait"}, {label: "Horizontal", value: "landscape"}], default: "square"}
               - {label: "Forma de la imagen (Solo formato cuadrado)", name: "image_shape", widget: "select", options: [{label: "Esquina truncada", value: "quarter-circle-tr"}, {label: "Forma orgánica (Blob)", value: "blob-shape"}, {label: "Sin efecto", value: "none"}], default: "none", required: false}
               - {label: "Presentación PDF (Extrae diapositivas automáticamente)", name: "pdf_file", widget: "file", required: false}
