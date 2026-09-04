@@ -259,8 +259,7 @@ a:hover {
   overflow: hidden;
   cursor: pointer;
   background-color: transparent;
-  /* El height automático inicial permite a JS leer la proporción */
-  height: max-content;
+  height: 100%;
   /* Empieza oculto para ocultar los reajustes asincrónicos de tamaño de JS */
   opacity: 0;
   /* Efecto fade-in largamente retrasado y suave */
@@ -300,7 +299,7 @@ a:hover {
   transform: scale(1.05);
 }
 
-/* Configuraciones de Expansión Lateral */
+/* Configuraciones de Expansión Lateral y Proporción */
 .format-square {
   grid-column: span 1;
 }
@@ -313,8 +312,16 @@ a:hover {
   grid-column: span 1;
 }
 
+.format-portrait .image-wrapper {
+  aspect-ratio: 9 / 16;
+}
+
 .format-landscape {
   grid-column: span 2;
+}
+
+.format-landscape .image-wrapper {
+  aspect-ratio: 16 / 9;
 }
 
 /* Formas geométricas / orgánicas */
@@ -463,6 +470,26 @@ a:hover {
   overflow: hidden;
   border-bottom: 1px solid var(--border-color);
   margin-bottom: 1.5rem;
+}
+
+.modal-video-container.video-format-square {
+  aspect-ratio: 1 / 1;
+  max-height: 65vh;
+  max-width: 65vh;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.modal-video-container.video-format-portrait {
+  aspect-ratio: 9 / 16;
+  max-height: 75vh;
+  max-width: 420px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.modal-video-container.video-format-landscape {
+  aspect-ratio: 16 / 9;
 }
 
 .modal-video-container iframe {

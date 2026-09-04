@@ -8,11 +8,7 @@
       "image_shape": "none",
       "pdf_file": "",
       "vimeo_url": "",
-      "video_crop": "16:9",
-      "video_align": "center",
-      "vimeo_source_aspect": "16:9",
-      "gallery": [],
-      "sub_videos": []
+      "gallery": []
     },
     {
       "title": "proyectos 3D",
@@ -22,11 +18,7 @@
       "image_shape": "none",
       "pdf_file": "",
       "vimeo_url": "1101316855",
-      "video_crop": "1:1",
-      "video_align": "center",
-      "vimeo_source_aspect": "1:1",
-      "gallery": [],
-      "sub_videos": [
+      "gallery": [
         {
           "vimeo_url": "1108564412",
           "title": ""
@@ -37,15 +29,11 @@
       "title": "hanmma",
       "description": "linea de ropa con realidad aumentada",
       "image": "",
-      "format": "square",
+      "format": "landscape",
       "image_shape": "none",
       "pdf_file": "",
       "vimeo_url": "1109868960",
-      "video_crop": "16:9",
-      "video_align": "center",
-      "vimeo_source_aspect": "16:9",
-      "gallery": [],
-      "sub_videos": []
+      "gallery": []
     },
     {
       "title": "80 caracrteres",
@@ -55,11 +43,7 @@
       "image_shape": "none",
       "pdf_file": "/assets/uploads/manual y recursos 80C.pdf",
       "vimeo_url": "",
-      "video_crop": "16:9",
-      "video_align": "center",
-      "vimeo_source_aspect": "16:9",
-      "gallery": [],
-      "sub_videos": []
+      "gallery": []
     },
     {
       "title": "Rondot",
@@ -69,11 +53,7 @@
       "image_shape": "none",
       "pdf_file": "",
       "vimeo_url": "1108549611",
-      "video_crop": "16:9",
-      "video_align": "center",
-      "vimeo_source_aspect": "16:9",
-      "gallery": [],
-      "sub_videos": []
+      "gallery": []
     },
     {
       "title": "montaje para campaña",
@@ -83,11 +63,7 @@
       "image_shape": "none",
       "pdf_file": "",
       "vimeo_url": "1224100443",
-      "video_crop": "16:9",
-      "video_align": "center",
-      "vimeo_source_aspect": "16:9",
-      "gallery": [],
-      "sub_videos": []
+      "gallery": []
     }
   ]
 }

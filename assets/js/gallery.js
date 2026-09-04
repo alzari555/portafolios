@@ -145,8 +145,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     container.innerHTML = '';
 
     items.forEach((item, index) => {
-      // Formatos válidos: square, portrait, landscape (exacto a emebe-pagina)
-      const formatClass = `format-${item.format || 'square'}`;
+      // Formatos válidos: square (1:1), portrait (9:16), landscape (16:9)
+      const format = item.format || 'square';
+      const formatClass = `format-${format}`;
       const shapeVal = item.image_shape || 'none';
       const imgCornerClass = shapeVal === 'none' ? '' : shapeVal;
       const itemIndex = String(index + 1).padStart(2, '0');
@@ -157,10 +158,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       const vimeoData = parseVimeo(item.vimeo_url);
       const hasVimeo = Boolean(vimeoData && vimeoData.id);
-      const defaultCrop = item.format === 'square' ? '1:1' : (item.format === 'portrait' ? '9:16' : '16:9');
-      const cropRatio = parseCropRatio(item.video_crop || defaultCrop);
-      const sourceRatio = parseCropRatio(item.vimeo_source_aspect || '16:9');
-      const videoAlign = item.video_align || 'center';
 
       let mediaHtml = '';
       if (hasVimeo) {
@@ -172,9 +169,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     frameborder="0"
                     allow="autoplay; fullscreen; picture-in-picture"
                     tabindex="-1"
-                    title="${escapeHtml(item.title)}"
-                    data-source-ratio="${sourceRatio}"
-                    data-crop-align="${videoAlign}">
+                    title="${escapeHtml(item.title)}">
             </iframe>
           </div>
         `;
@@ -187,9 +182,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       div.dataset.index = index;
       if (hasVimeo) {
         div.dataset.hasVimeo = 'true';
-        div.dataset.cropRatio = cropRatio;
-        div.dataset.cropAlign = videoAlign;
-        div.dataset.sourceRatio = sourceRatio;
       }
 
       div.innerHTML = `
@@ -257,25 +249,25 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   // --------------------------------------------------------------------------
-  // Algoritmo de Grilla Masonry & Recorte de Videos
+  // Algoritmo de Grilla Masonry & Ajuste Proporcional de Videos
   // --------------------------------------------------------------------------
   function resizeGridItem(item, img) {
     const rowHeight = 10;
     const rowGap = 24; // 1.5rem = 24px
     const gridColWidth = item.getBoundingClientRect().width;
+    if (!gridColWidth) return;
 
     let targetHeight;
     if (item.classList.contains('format-square')) {
       targetHeight = gridColWidth;
-    } else if (item.dataset.hasVimeo === 'true') {
-      const cropRatio = parseFloat(item.dataset.cropRatio) || (16 / 9);
-      targetHeight = gridColWidth / cropRatio;
-    } else if (img) {
-      const naturalRatio = img.naturalWidth / img.naturalHeight;
-      if (!naturalRatio || isNaN(naturalRatio)) return;
-      targetHeight = gridColWidth / naturalRatio;
+    } else if (item.classList.contains('format-portrait')) {
+      targetHeight = gridColWidth * (16 / 9); // 9:16 vertical
+    } else if (item.classList.contains('format-landscape')) {
+      targetHeight = gridColWidth * (9 / 16); // 16:9 horizontal
+    } else if (img && img.naturalWidth > 0 && img.naturalHeight > 0) {
+      targetHeight = gridColWidth / (img.naturalWidth / img.naturalHeight);
     } else {
-      targetHeight = gridColWidth * 0.75;
+      targetHeight = gridColWidth;
     }
 
     const rowSpan = Math.ceil((targetHeight + rowGap) / (rowHeight + rowGap));
@@ -296,9 +288,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     const h = wrapper.clientHeight;
     if (!w || !h) return;
 
-    const sourceRatio = parseFloat(iframe.dataset.sourceRatio) || (16 / 9);
     const containerRatio = w / h;
-    const align = iframe.dataset.cropAlign || 'center';
+    const isPortrait = item.classList.contains('format-portrait');
+    const sourceRatio = isPortrait ? (9 / 16) : (16 / 9);
 
     let finalW, finalH;
     if (containerRatio > sourceRatio) {
@@ -311,23 +303,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     iframe.style.width = `${Math.ceil(finalW)}px`;
     iframe.style.height = `${Math.ceil(finalH)}px`;
-
-    if (align === 'top') {
-      iframe.style.top = '0';
-      iframe.style.bottom = 'auto';
-      iframe.style.left = '50%';
-      iframe.style.transform = 'translateX(-50%)';
-    } else if (align === 'bottom') {
-      iframe.style.top = 'auto';
-      iframe.style.bottom = '0';
-      iframe.style.left = '50%';
-      iframe.style.transform = 'translateX(-50%)';
-    } else {
-      iframe.style.top = '50%';
-      iframe.style.bottom = 'auto';
-      iframe.style.left = '50%';
-      iframe.style.transform = 'translate(-50%, -50%)';
-    }
+    iframe.style.top = '50%';
+    iframe.style.left = '50%';
+    iframe.style.transform = 'translate(-50%, -50%)';
   }
 
   function resizeAllGridItems() {
@@ -371,8 +349,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Si tiene video de Vimeo, inyectamos el reproductor con audio en el modal
     const vimeoData = parseVimeo(item.vimeo_url);
     if (vimeoData && vimeoData.id) {
+      const formatClass = `video-format-${item.format || 'landscape'}`;
       imagesHtml += `
-        <div class="modal-video-container">
+        <div class="modal-video-container ${formatClass}">
           <iframe src="https://player.vimeo.com/video/${vimeoData.id}?autoplay=1&title=0&byline=0&portrait=0${vimeoData.hash ? `&h=${vimeoData.hash}` : ''}"
                   frameborder="0"
                   allow="autoplay; fullscreen; picture-in-picture"

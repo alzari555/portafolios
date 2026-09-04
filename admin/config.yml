@@ -26,26 +26,16 @@ collections:
             fields:
               - {label: "Título", name: "title", widget: "string"}
               - {label: "Descripción", name: "description", widget: "text", required: false}
+              - {label: "Formato en Grilla", name: "format", widget: "select", options: [{label: "Cuadrada (1:1)", value: "square"}, {label: "Vertical (9:16)", value: "portrait"}, {label: "Horizontal (16:9)", value: "landscape"}], default: "square"}
               - {label: "Imagen Principal (Opcional si usas Video o PDF)", name: "image", widget: "image", required: false}
-              - {label: "Formato en Grilla", name: "format", widget: "select", options: [{label: "Cuadrada", value: "square"}, {label: "Vertical", value: "portrait"}, {label: "Horizontal", value: "landscape"}], default: "square"}
               - {label: "Forma de la imagen (Solo formato cuadrado)", name: "image_shape", widget: "select", options: [{label: "Esquina truncada", value: "quarter-circle-tr"}, {label: "Forma orgánica (Blob)", value: "blob-shape"}, {label: "Sin efecto", value: "none"}], default: "none", required: false}
+              - {label: "Video de Vimeo (URL o ID)", name: "vimeo_url", widget: "string", required: false, hint: "Ej: https://vimeo.com/1109868960 o ID numérico"}
               - {label: "Presentación PDF (Extrae diapositivas automáticamente)", name: "pdf_file", widget: "file", required: false}
-              - {label: "Video de Vimeo (URL o ID)", name: "vimeo_url", widget: "string", required: false, hint: "Ej: https://vimeo.com/76979871 o ID numérico"}
-              - {label: "Marco de Recorte del Video en Grilla", name: "video_crop", widget: "select", options: [{label: "16:9 Panorámico estándar", value: "16:9"}, {label: "1:1 Cuadrado", value: "1:1"}, {label: "9:16 Vertical (Reels / TikTok)", value: "9:16"}, {label: "4:5 Vertical Editorial", value: "4:5"}, {label: "21:9 Cinemascópico", value: "21:9"}, {label: "4:3 Clásico", value: "4:3"}], default: "16:9", required: false}
-              - {label: "Encuadre / Alineación del Recorte", name: "video_align", widget: "select", options: [{label: "Centro", value: "center"}, {label: "Superior (Arriba)", value: "top"}, {label: "Inferior (Abajo)", value: "bottom"}], default: "center", required: false}
-              - {label: "Proporción Original de Grabación del Video", name: "vimeo_source_aspect", widget: "select", options: [{label: "16:9 Horizontal tradicional", value: "16:9"}, {label: "9:16 Grabado en Vertical", value: "9:16"}, {label: "1:1 Cuadrado nativo", value: "1:1"}, {label: "21:9 Panavision / Cinemascópico", value: "21:9"}], default: "16:9", required: false}
-              - label: "Galería Adicional (Imágenes y Sub-videos)"
+              - label: "Galería Adicional (Imágenes y Sub-videos en Modal)"
                 name: "gallery"
                 widget: "list"
                 required: false
                 fields:
                   - {label: "Imagen Extra (Opcional)", name: "image", widget: "image", required: false}
-                  - {label: "Sub-video de Vimeo (URL o ID)", name: "vimeo_url", widget: "string", required: false, hint: "Ej: https://vimeo.com/1084537 o ID numérico"}
+                  - {label: "Sub-video de Vimeo (URL o ID - Opcional)", name: "vimeo_url", widget: "string", required: false, hint: "Ej: https://vimeo.com/1084537 o ID numérico"}
                   - {label: "Título / Pie de este elemento (Opcional)", name: "title", widget: "string", required: false}
-              - label: "Sub-videos de Vimeo Adicionales (Opcional)"
-                name: "sub_videos"
-                widget: "list"
-                required: false
-                fields:
-                  - {label: "Sub-video de Vimeo (URL o ID)", name: "vimeo_url", widget: "string", hint: "Ej: https://vimeo.com/1084537 o ID numérico"}
-                  - {label: "Título del sub-video (Opcional)", name: "title", widget: "string", required: false}
