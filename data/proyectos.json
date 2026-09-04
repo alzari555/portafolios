@@ -21,9 +21,9 @@
       "image_shape": "none",
       "pdf_file": "",
       "vimeo_url": "1101316855",
-      "video_crop": "4:5",
+      "video_crop": "1:1",
       "video_align": "center",
-      "vimeo_source_aspect": "16:9",
+      "vimeo_source_aspect": "1:1",
       "gallery": []
     }
   ]
