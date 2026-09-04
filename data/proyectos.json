@@ -8,7 +8,11 @@
       "image_shape": "none",
       "pdf_file": "",
       "vimeo_url": "",
-      "gallery": []
+      "video_crop": "16:9",
+      "video_align": "center",
+      "vimeo_source_aspect": "16:9",
+      "gallery": [],
+      "sub_videos": []
     },
     {
       "title": "proyectos 3D",
@@ -18,7 +22,11 @@
       "image_shape": "none",
       "pdf_file": "",
       "vimeo_url": "1101316855",
-      "gallery": [
+      "video_crop": "1:1",
+      "video_align": "center",
+      "vimeo_source_aspect": "1:1",
+      "gallery": [],
+      "sub_videos": [
         {
           "vimeo_url": "1108564412",
           "title": ""
@@ -29,31 +37,43 @@
       "title": "hanmma",
       "description": "linea de ropa con realidad aumentada",
       "image": "",
-      "format": "landscape",
+      "format": "square",
       "image_shape": "none",
       "pdf_file": "",
       "vimeo_url": "1109868960",
-      "gallery": []
+      "video_crop": "16:9",
+      "video_align": "center",
+      "vimeo_source_aspect": "16:9",
+      "gallery": [],
+      "sub_videos": []
     },
     {
       "title": "80 caracrteres",
       "description": "manual de marca de una agencia que supo estar en funcionamiento",
       "image": "/assets/uploads/Captura de pantalla 2026-09-04 162753.png",
-      "format": "square",
+      "format": "landscape",
       "image_shape": "none",
       "pdf_file": "/assets/uploads/manual y recursos 80C.pdf",
       "vimeo_url": "",
-      "gallery": []
+      "video_crop": "16:9",
+      "video_align": "center",
+      "vimeo_source_aspect": "16:9",
+      "gallery": [],
+      "sub_videos": []
     },
     {
       "title": "Rondot",
       "description": "una marca personal para la que he creado una identidad superficial y material de de comunicación",
       "image": "",
-      "format": "landscape",
+      "format": "square",
       "image_shape": "none",
       "pdf_file": "",
       "vimeo_url": "1108549611",
-      "gallery": []
+      "video_crop": "16:9",
+      "video_align": "center",
+      "vimeo_source_aspect": "1:1",
+      "gallery": [],
+      "sub_videos": []
     },
     {
       "title": "montaje para campaña",
@@ -63,7 +83,11 @@
       "image_shape": "none",
       "pdf_file": "",
       "vimeo_url": "1224100443",
-      "gallery": []
+      "video_crop": "4:5",
+      "video_align": "center",
+      "vimeo_source_aspect": "16:9",
+      "gallery": [],
+      "sub_videos": []
     }
   ]
 }
