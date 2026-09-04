@@ -8,9 +8,11 @@
       "image_shape": "none",
       "pdf_file": "",
       "vimeo_url": "",
-      "video_aspect": "auto",
-      "video_fit": "cover",
-      "gallery": []
+      "video_crop": "16:9",
+      "video_align": "center",
+      "vimeo_source_aspect": "16:9",
+      "gallery": [],
+      "sub_videos": []
     },
     {
       "title": "proyectos 3D",
@@ -20,12 +22,13 @@
       "image_shape": "none",
       "pdf_file": "",
       "vimeo_url": "1101316855",
-      "video_aspect": "1:1",
-      "video_fit": "cover",
-      "gallery": [
+      "video_crop": "1:1",
+      "video_align": "center",
+      "vimeo_source_aspect": "1:1",
+      "gallery": [],
+      "sub_videos": [
         {
           "vimeo_url": "1108564412",
-          "video_aspect": "16:9",
           "title": ""
         }
       ]
@@ -38,9 +41,11 @@
       "image_shape": "none",
       "pdf_file": "",
       "vimeo_url": "1109868960",
-      "video_aspect": "1:1",
-      "video_fit": "cover",
-      "gallery": []
+      "video_crop": "16:9",
+      "video_align": "center",
+      "vimeo_source_aspect": "16:9",
+      "gallery": [],
+      "sub_videos": []
     },
     {
       "title": "80 caracrteres",
@@ -50,9 +55,11 @@
       "image_shape": "none",
       "pdf_file": "/assets/uploads/manual y recursos 80C.pdf",
       "vimeo_url": "",
-      "video_aspect": "auto",
-      "video_fit": "cover",
-      "gallery": []
+      "video_crop": "16:9",
+      "video_align": "center",
+      "vimeo_source_aspect": "16:9",
+      "gallery": [],
+      "sub_videos": []
     },
     {
       "title": "Rondot",
@@ -62,9 +69,11 @@
       "image_shape": "none",
       "pdf_file": "",
       "vimeo_url": "1108549611",
-      "video_aspect": "1:1",
-      "video_fit": "cover",
-      "gallery": []
+      "video_crop": "16:9",
+      "video_align": "center",
+      "vimeo_source_aspect": "1:1",
+      "gallery": [],
+      "sub_videos": []
     },
     {
       "title": "montaje para campaña",
@@ -74,9 +83,11 @@
       "image_shape": "none",
       "pdf_file": "",
       "vimeo_url": "1224100443",
-      "video_aspect": "3:4",
-      "video_fit": "cover",
-      "gallery": []
+      "video_crop": "4:5",
+      "video_align": "center",
+      "vimeo_source_aspect": "9:16",
+      "gallery": [],
+      "sub_videos": []
     }
   ]
 }
