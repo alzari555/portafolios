@@ -358,6 +358,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     modalTitle.textContent = item.title;
     modalDesc.textContent = item.description || '';
 
+    const modalSpecs = modal.querySelector('.modal-specs');
+    if (modalSpecs) modalSpecs.innerHTML = '';
+
     const rawImagePath = cleanPath(item.image);
     const isPdfImage = rawImagePath && rawImagePath.toLowerCase().endsWith('.pdf');
     const targetPdf = item.pdf_file ? cleanPath(item.pdf_file) : (isPdfImage ? rawImagePath : null);
@@ -445,11 +448,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     modalImages.innerHTML = imagesHtml;
 
     // Enlace a Vimeo en los metadatos del modal
-    const modalSpecs = modal.querySelector('.modal-specs');
     if (modalSpecs) {
-      const existingVimeoLink = modalSpecs.querySelector('.vimeo-download-link');
-      if (existingVimeoLink) existingVimeoLink.remove();
-
       if (vimeoData && vimeoData.id) {
         const vimeoLink = document.createElement('a');
         vimeoLink.href = `https://vimeo.com/${vimeoData.id}`;
@@ -467,11 +466,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       pdfContainer.innerHTML = '<div class="pdf-loading">[ EXTRACIENDO DIAPOSITIVAS DEL DOCUMENTO PDF... ]</div>';
       modalImages.appendChild(pdfContainer);
 
-      const modalSpecs = modal.querySelector('.modal-specs');
       if (modalSpecs) {
-        const existingPdfLink = modalSpecs.querySelector('.pdf-download-link');
-        if (existingPdfLink) existingPdfLink.remove();
-
         const pdfLink = document.createElement('a');
         pdfLink.href = `${targetPdf}?v=${timestamp}`;
         pdfLink.target = '_blank';
@@ -519,11 +514,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         pdfContainer.innerHTML = '<div class="pdf-loading">[ NO SE PUDO CARGAR EL PDF O FORMATO NO COMPATIBLE ]</div>';
       }
     } else {
-      const modalSpecs = modal.querySelector('.modal-specs');
-      if (modalSpecs) {
-        const existingPdfLink = modalSpecs.querySelector('.pdf-download-link');
-        if (existingPdfLink) existingPdfLink.remove();
-      }
       modal.showModal();
       if (modalInner) modalInner.scrollTop = 0;
       modal.scrollTop = 0;
