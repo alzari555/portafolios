@@ -478,6 +478,72 @@ a:hover {
   color: var(--text-subtle);
 }
 
+.item-pdf-tag {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 700;
+  border: 1px solid var(--border-color);
+  padding: 1px 4px;
+  line-height: 1;
+}
+
+.grid-item:hover .item-pdf-tag {
+  border-color: #ffffff;
+  color: #ffffff;
+}
+
+/* Visor de diapositivas PDF en modal */
+.pdf-slides-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-top: 1rem;
+}
+
+.pdf-loading {
+  padding: 1.5rem;
+  border: 1px dashed var(--border-color);
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--text-subtle);
+  letter-spacing: 0.05em;
+  background: #fafafa;
+}
+
+.slide-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.slide-caption {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--text-subtle);
+  letter-spacing: 0.06em;
+  text-align: right;
+}
+
+.pdf-download-link {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-color);
+  border: 1px solid var(--border-dark);
+  padding: 8px 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.8rem;
+  transition: all 0.15s ease;
+}
+
+.pdf-download-link:hover {
+  background: var(--text-color);
+  color: #ffffff;
+}
+
 /* ==========================================================================
    SECCIÓN DE PERFIL Y COMPETENCIAS
    ========================================================================== */

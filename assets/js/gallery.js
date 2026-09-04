@@ -1,6 +1,6 @@
 /**
  * GALERÍA Y MASONRY GRID — MIGUEL ALZARI
- * Lógica de grilla masonry adaptada al catálogo editorial de diseño gráfico.
+ * Lógica de grilla masonry con soporte para extracción automática de diapositivas PDF.
  */
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -26,7 +26,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   if (modal) {
     modal.addEventListener('click', (e) => {
-      // Cierre al cliquear en el fondo (backdrop)
       const rect = modal.getBoundingClientRect();
       const isInDialog = (
         rect.top <= e.clientY &&
@@ -53,6 +52,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       modal.close();
       modal.style.opacity = '';
       modal.style.transform = '';
+      if (modalImages) modalImages.innerHTML = '';
     }, 200);
   }
 
@@ -91,12 +91,14 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (imagePath.startsWith('/')) {
         imagePath = imagePath.substring(1);
       }
-      const imgSrc = `${imagePath}?v=${timestamp}`;
+      const imgSrc = imagePath ? `${imagePath}?v=${timestamp}` : '';
 
       const div = document.createElement('div');
       div.className = `grid-item ${formatClass}`;
       div.dataset.index = index;
       div.style.animationDelay = `${index * 0.07}s`;
+
+      const pdfBadge = item.pdf_file ? '<span class="item-pdf-tag">PDF</span>' : '';
 
       div.innerHTML = `
         <div class="image-wrapper">
@@ -104,7 +106,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         </div>
         <div class="item-meta-bar">
           <span class="item-meta-title">${escapeHtml(item.title)}</span>
-          <span class="item-meta-index">${itemIndex}</span>
+          <div style="display: flex; align-items: center; gap: 6px;">
+            ${pdfBadge}
+            <span class="item-meta-index">${itemIndex}</span>
+          </div>
         </div>
       `;
 
@@ -114,7 +119,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       container.appendChild(div);
 
-      // Redimensionamiento de fila masonry al cargar la imagen
       const imgNode = div.querySelector('img');
       if (imgNode) {
         if (imgNode.complete) {
@@ -133,11 +137,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   // --------------------------------------------------------------------------
-  // Algoritmo de Grilla Masonry (Lógica idéntica a emebe-pagina)
+  // Algoritmo de Grilla Masonry (Lógica de emebe-pagina con compensación de barra)
   // --------------------------------------------------------------------------
   function resizeGridItem(item, img) {
     const rowHeight = 10;
-    const rowGap = 28; // var(--grid-gap)
+    const rowGap = 28;
     const gridColWidth = item.getBoundingClientRect().width;
 
     const metaBar = item.querySelector('.item-meta-bar');
@@ -166,7 +170,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  // Recalcular al cambiar el tamaño de ventana con debounce
   let resizeTimeout;
   window.addEventListener('resize', () => {
     clearTimeout(resizeTimeout);
@@ -174,9 +177,30 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   // --------------------------------------------------------------------------
-  // Apertura del Modal de Detalle
+  // Carga dinámica de PDF.js bajo demanda (Solo cuando se visualiza un PDF)
   // --------------------------------------------------------------------------
-  function openModal(item, timestamp, itemIndex) {
+  let pdfjsPromise = null;
+  function loadPdfJs() {
+    if (window.pdfjsLib) return Promise.resolve(window.pdfjsLib);
+    if (pdfjsPromise) return pdfjsPromise;
+
+    pdfjsPromise = new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+      script.onload = () => {
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        resolve(window.pdfjsLib);
+      };
+      script.onerror = reject;
+      document.head.appendChild(script);
+    });
+    return pdfjsPromise;
+  }
+
+  // --------------------------------------------------------------------------
+  // Apertura del Modal y Extracción de Diapositivas PDF
+  // --------------------------------------------------------------------------
+  async function openModal(item, timestamp, itemIndex) {
     if (!modal) return;
 
     modalTitle.textContent = item.title;
@@ -189,8 +213,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     let mainImgPath = item.image || '';
     if (mainImgPath.startsWith('/')) mainImgPath = mainImgPath.substring(1);
 
-    let imagesHtml = `<img src="${mainImgPath}?v=${timestamp}" alt="${escapeHtml(item.title)}" class="main-modal-img">`;
+    // Contenedor de imágenes
+    let imagesHtml = '';
+    if (mainImgPath) {
+      imagesHtml += `<img src="${mainImgPath}?v=${timestamp}" alt="${escapeHtml(item.title)}" class="main-modal-img">`;
+    }
 
+    // Galería adicional estática
     if (item.gallery && item.gallery.length > 0) {
       item.gallery.forEach(g => {
         if (g && g.image) {
@@ -202,7 +231,71 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     modalImages.innerHTML = imagesHtml;
-    modal.showModal();
+
+    // Si el proyecto tiene un archivo PDF vinculado, extraer sus diapositivas
+    if (item.pdf_file) {
+      let pdfPath = item.pdf_file;
+      if (pdfPath.startsWith('/')) pdfPath = pdfPath.substring(1);
+
+      const pdfContainer = document.createElement('div');
+      pdfContainer.className = 'pdf-slides-wrapper';
+      pdfContainer.innerHTML = '<div class="pdf-loading">[ EXTRACIENDO DIAPOSITIVAS DEL PDF... ]</div>';
+      modalImages.appendChild(pdfContainer);
+
+      // Enlace en specs del modal
+      const modalSpecs = modal.querySelector('.modal-specs');
+      if (modalSpecs) {
+        const existingPdfLink = modalSpecs.querySelector('.pdf-download-link');
+        if (existingPdfLink) existingPdfLink.remove();
+
+        const pdfLink = document.createElement('a');
+        pdfLink.href = `${pdfPath}?v=${timestamp}`;
+        pdfLink.target = '_blank';
+        pdfLink.className = 'pdf-download-link';
+        pdfLink.innerHTML = '<span>Ver Documento PDF Completo</span> &nearr;';
+        modalSpecs.appendChild(pdfLink);
+      }
+
+      modal.showModal();
+
+      try {
+        const pdfjs = await loadPdfJs();
+        const loadingTask = pdfjs.getDocument(`${pdfPath}?v=${timestamp}`);
+        const pdf = await loadingTask.promise;
+        pdfContainer.innerHTML = '';
+
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i);
+          // Escala 2.0 para nitidez Retina/Full HD
+          const viewport = page.getViewport({ scale: 2.0 });
+
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+
+          await page.render({ canvasContext: ctx, viewport }).promise;
+
+          const slideCard = document.createElement('div');
+          slideCard.className = 'slide-item';
+          slideCard.innerHTML = `
+            <img src="${canvas.toDataURL('image/webp', 0.92)}" alt="Diapositiva ${i} de ${pdf.numPages}" class="extra-modal-img">
+            <span class="slide-caption">DIAPOSITIVA ${String(i).padStart(2, '0')} / ${String(pdf.numPages).padStart(2, '0')}</span>
+          `;
+          pdfContainer.appendChild(slideCard);
+        }
+      } catch (err) {
+        console.error('Error al extraer diapositivas del PDF:', err);
+        pdfContainer.innerHTML = '<div class="pdf-loading">[ NO SE PUDO CARGAR EL PDF O FORMATO NO COMPATIBLE ]</div>';
+      }
+    } else {
+      const modalSpecs = modal.querySelector('.modal-specs');
+      if (modalSpecs) {
+        const existingPdfLink = modalSpecs.querySelector('.pdf-download-link');
+        if (existingPdfLink) existingPdfLink.remove();
+      }
+      modal.showModal();
+    }
   }
 
   // Sanitizador de texto

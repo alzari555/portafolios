@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Extractor de Diapositivas PDF — Miguel Alzari</title>
+  
+  <!-- Estilos tipográficos -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- Librerías cliente: PDF.js y JSZip -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+  <style>
+    :root {
+      --bg: #ffffff;
+      --text: #000000;
+      --text-muted: #666666;
+      --border: #e2e2e2;
+      --border-dark: #000000;
+      --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --font-mono: "Space Mono", monospace;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      padding: 3rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      letter-spacing: -0.01em;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .title-group h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .title-group p {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+
+    .back-link {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border: 1px solid var(--border-dark);
+      padding: 6px 14px;
+      transition: all 0.15s ease;
+    }
+
+    .back-link:hover {
+      background: var(--text);
+      color: #fff;
+    }
+
+    /* Zona de Drop */
+    .drop-zone {
+      border: 2px dashed var(--border-dark);
+      padding: 3.5rem 2rem;
+      text-align: center;
+      cursor: pointer;
+      background: #fafafa;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
+      position: relative;
+      margin-bottom: 2.5rem;
+    }
+
+    .drop-zone.dragover {
+      background: #f0f0f0;
+      border-color: var(--text);
+    }
+
+    .drop-icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .drop-text {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+    }
+
+    .drop-subtext {
+      font-size: 0.78rem;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+    }
+
+    input[type="file"] {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    /* Barra de Progreso */
+    .progress-bar-container {
+      display: none;
+      margin-bottom: 2.5rem;
+      border: 1px solid var(--border-dark);
+      padding: 1.25rem;
+      background: #fff;
+    }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 4px;
+      background: #eee;
+      position: relative;
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      background: var(--text);
+      transition: width 0.15s ease;
+    }
+
+    /* Acciones Globales */
+    .actions-bar {
+      display: none;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .slides-count {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    .btn {
+      background: var(--text);
+      color: #fff;
+      border: 1px solid var(--text);
+      padding: 8px 18px;
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.15s ease;
+    }
+
+    .btn:hover {
+      background: #333;
+    }
+
+    /* Grilla de Diapositivas Extraídas */
+    .slides-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 24px;
+    }
+
+    .slide-card {
+      border: 1px solid var(--border);
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition: border-color 0.2s ease;
+    }
+
+    .slide-card:hover {
+      border-color: var(--border-dark);
+    }
+
+    .slide-thumb {
+      width: 100%;
+      height: auto;
+      display: block;
+      background: #fafafa;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .slide-meta {
+      padding: 0.8rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .slide-label {
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      font-weight: 700;
+    }
+
+    .btn-download-single {
+      background: transparent;
+      border: 1px solid var(--border-dark);
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      padding: 3px 8px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-download-single:hover {
+      background: var(--text);
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="title-group">
+      <h1>Extractor de Diapositivas PDF</h1>
+      <p>Convierte presentaciones y folletos PDF en imágenes de alta resolución (.WebP) para el portafolio.</p>
+    </div>
+    <a href="index.html" class="back-link">&larr; Panel CMS</a>
+  </header>
+
+  <main>
+    <!-- Zona Drag & Drop -->
+    <div class="drop-zone" id="dropZone">
+      <input type="file" id="fileInput" accept="application/pdf">
+      <span class="drop-icon">&#9638;</span>
+      <div class="drop-text">Arrastra tu archivo PDF aquí o haz clic para seleccionarlo</div>
+      <div class="drop-subtext">[ Soporta documentos multipágina, presentaciones 16:9 y 4:3 ]</div>
+    </div>
+
+    <!-- Barra de Progreso -->
+    <div class="progress-bar-container" id="progressContainer">
+      <div class="progress-header">
+        <span id="progressText">Extrayendo diapositivas...</span>
+        <span id="progressPercent">0%</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+    </div>
+
+    <!-- Barra de Acciones de Descarga -->
+    <div class="actions-bar" id="actionsBar">
+      <span class="slides-count" id="slidesCount">0 DIAPOSITIVAS EXTRAÍDAS</span>
+      <button class="btn" id="btnDownloadZip">
+        <span>Descargar Todo (.ZIP)</span> &darr;
+      </button>
+    </div>
+
+    <!-- Grilla de Resultados -->
+    <div class="slides-grid" id="slidesGrid"></div>
+  </main>
+
+  <script>
+    // Configuración del worker de PDF.js
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+    const progressContainer = document.getElementById('progressContainer');
+    const progressText = document.getElementById('progressText');
+    const progressPercent = document.getElementById('progressPercent');
+    const progressFill = document.getElementById('progressFill');
+    const actionsBar = document.getElementById('actionsBar');
+    const slidesCount = document.getElementById('slidesCount');
+    const btnDownloadZip = document.getElementById('btnDownloadZip');
+    const slidesGrid = document.getElementById('slidesGrid');
+
+    let extractedSlides = [];
+    let currentPdfName = 'presentacion';
+
+    // Drag & Drop visuales
+    ['dragenter', 'dragover'].forEach(eventName => {
+      dropZone.addEventListener(eventName, e => {
+        e.preventDefault();
+        dropZone.classList.add('dragover');
+      });
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+      dropZone.addEventListener(eventName, e => {
+        e.preventDefault();
+        dropZone.classList.remove('dragover');
+      });
+    });
+
+    fileInput.addEventListener('change', e => {
+      if (e.target.files && e.target.files[0]) {
+        processPdf(e.target.files[0]);
+      }
+    });
+
+    dropZone.addEventListener('drop', e => {
+      if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) {
+        processPdf(e.dataTransfer.files[0]);
+      }
+    });
+
+    // Procesamiento con PDF.js
+    async function processPdf(file) {
+      if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
+        alert('Por favor selecciona un archivo PDF válido.');
+        return;
+      }
+
+      currentPdfName = file.name.replace(/\.[^/.]+$/, "");
+      extractedSlides = [];
+      slidesGrid.innerHTML = '';
+      actionsBar.style.display = 'none';
+
+      progressContainer.style.display = 'block';
+      progressText.textContent = `Leyendo "${file.name}"...`;
+      progressPercent.textContent = '0%';
+      progressFill.style.width = '0%';
+
+      try {
+        const arrayBuffer = await file.arrayBuffer();
+        const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+        const pdf = await loadingTask.promise;
+        const totalPages = pdf.numPages;
+
+        for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
+          progressText.textContent = `Extrayendo diapositiva ${pageNum} de ${totalPages}...`;
+          const pct = Math.round((pageNum / totalPages) * 100);
+          progressPercent.textContent = `${pct}%`;
+          progressFill.style.width = `${pct}%`;
+
+          const page = await pdf.getPage(pageNum);
+          // Escala 2.0 para resolución nítida Retina/Full HD
+          const viewport = page.getViewport({ scale: 2.0 });
+
+          const canvas = document.createElement('canvas');
+          const context = canvas.getContext('2d');
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+
+          await page.render({
+            canvasContext: context,
+            viewport: viewport
+          }).promise;
+
+          // Convertir a blob WebP de alta fidelidad
+          const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/webp', 0.92));
+          const dataUrl = canvas.toDataURL('image/webp', 0.92);
+
+          extractedSlides.push({
+            index: pageNum,
+            blob: blob,
+            dataUrl: dataUrl,
+            filename: `${currentPdfName}_slide_${String(pageNum).padStart(2, '0')}.webp`
+          });
+
+          // Agregar tarjeta visual
+          renderSlideCard(pageNum, dataUrl);
+        }
+
+        progressContainer.style.display = 'none';
+        actionsBar.style.display = 'flex';
+        slidesCount.textContent = `${totalPages} DIAPOSITIVAS EXTRAÍDAS [ .WEBP ]`;
+
+      } catch (err) {
+        console.error('Error al procesar PDF:', err);
+        alert('Hubo un error al procesar el archivo PDF: ' + err.message);
+        progressContainer.style.display = 'none';
+      }
+    }
+
+    function renderSlideCard(pageNum, dataUrl) {
+      const card = document.createElement('div');
+      card.className = 'slide-card';
+      const label = `Diapositiva ${String(pageNum).padStart(2, '0')}`;
+      const filename = `${currentPdfName}_slide_${String(pageNum).padStart(2, '0')}.webp`;
+
+      card.innerHTML = `
+        <img src="${dataUrl}" alt="${label}" class="slide-thumb">
+        <div class="slide-meta">
+          <span class="slide-label">${label}</span>
+          <button class="btn-download-single" onclick="downloadSingle(${pageNum - 1})">Descargar</button>
+        </div>
+      `;
+      slidesGrid.appendChild(card);
+    }
+
+    window.downloadSingle = function(idx) {
+      const slide = extractedSlides[idx];
+      if (!slide) return;
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(slide.blob);
+      a.download = slide.filename;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    };
+
+    btnDownloadZip.addEventListener('click', async () => {
+      if (extractedSlides.length === 0) return;
+      btnDownloadZip.disabled = true;
+      btnDownloadZip.textContent = 'Comprimiendo ZIP...';
+
+      const zip = new JSZip();
+      extractedSlides.forEach(slide => {
+        zip.file(slide.filename, slide.blob);
+      });
+
+      const zipContent = await zip.generateAsync({ type: 'blob' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(zipContent);
+      a.download = `${currentPdfName}_diapositivas.zip`;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+
+      btnDownloadZip.disabled = false;
+      btnDownloadZip.innerHTML = '<span>Descargar Todo (.ZIP)</span> &darr;';
+    });
+  </script>
+</body>
+</html>
