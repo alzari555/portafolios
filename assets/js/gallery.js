@@ -13,7 +13,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   const modalImages = document.getElementById('modal-images');
   const modalTitle = document.getElementById('modal-title');
   const modalDesc = document.getElementById('modal-desc');
-  const modalFormat = document.getElementById('modal-format');
 
   if (!container) return;
 
@@ -350,10 +349,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     modalTitle.textContent = item.title;
     modalDesc.textContent = item.description || '';
-
-    if (modalFormat) {
-      modalFormat.textContent = `PROYECTO ${itemIndex || ''} &bull; FORMATO ${item.format ? item.format.toUpperCase() : 'ESTÁNDAR'}`;
-    }
 
     const rawImagePath = cleanPath(item.image);
     const isPdfImage = rawImagePath && rawImagePath.toLowerCase().endsWith('.pdf');
