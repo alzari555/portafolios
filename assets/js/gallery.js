@@ -376,19 +376,65 @@ document.addEventListener('DOMContentLoaded', async () => {
       `;
     }
 
-    // Inyectar como imagen bitmap si NO es un archivo PDF y NO hay video principal
-    if (rawImagePath && !isPdfImage && !(vimeoData && vimeoData.id)) {
-      imagesHtml += `<img src="${rawImagePath}?v=${timestamp}" alt="${escapeHtml(item.title)}" class="main-modal-img">`;
+    // Imagen principal (si existe y no es PDF)
+    if (rawImagePath && !isPdfImage) {
+      const imgClass = (vimeoData && vimeoData.id) ? 'extra-modal-img' : 'main-modal-img';
+      imagesHtml += `<img src="${rawImagePath}?v=${timestamp}" alt="${escapeHtml(item.title)}" class="${imgClass}">`;
     }
 
-    // Galería estática adicional
+    // Galería adicional (sub-imágenes y sub-videos de Vimeo)
     if (item.gallery && item.gallery.length > 0) {
-      item.gallery.forEach(g => {
-        if (g && g.image) {
+      item.gallery.forEach((g, gIdx) => {
+        if (!g) return;
+        const subVimeo = parseVimeo(g.vimeo_url);
+        if (subVimeo && subVimeo.id) {
+          const caption = g.title || g.caption || `Sub-video ${String(gIdx + 1).padStart(2, '0')}`;
+          imagesHtml += `
+            <div class="modal-sub-video-item">
+              <span class="slide-caption">${escapeHtml(caption)}</span>
+              <div class="modal-video-container">
+                <iframe src="https://player.vimeo.com/video/${subVimeo.id}?autoplay=0&title=0&byline=0&portrait=0${subVimeo.hash ? `&h=${subVimeo.hash}` : ''}"
+                        frameborder="0"
+                        allow="autoplay; fullscreen; picture-in-picture"
+                        allowfullscreen>
+                </iframe>
+              </div>
+            </div>
+          `;
+        } else if (g.image) {
           const gImgPath = cleanPath(g.image);
           if (!gImgPath.toLowerCase().endsWith('.pdf')) {
-            imagesHtml += `<img src="${gImgPath}?v=${timestamp}" alt="Detalle de ${escapeHtml(item.title)}" class="extra-modal-img">`;
+            const caption = g.title || g.caption;
+            imagesHtml += `
+              <div class="modal-sub-image-item">
+                <img src="${gImgPath}?v=${timestamp}" alt="${escapeHtml(caption || item.title)}" class="extra-modal-img" loading="lazy">
+                ${caption ? `<span class="slide-caption">${escapeHtml(caption)}</span>` : ''}
+              </div>
+            `;
           }
+        }
+      });
+    }
+
+    // Sub-videos de Vimeo adicionales dedicados (si se configuraron en la lista sub_videos)
+    if (item.sub_videos && item.sub_videos.length > 0) {
+      item.sub_videos.forEach((sv, svIdx) => {
+        if (!sv) return;
+        const subVimeo = parseVimeo(sv.vimeo_url);
+        if (subVimeo && subVimeo.id) {
+          const caption = sv.title || `Sub-video ${String(svIdx + 1).padStart(2, '0')}`;
+          imagesHtml += `
+            <div class="modal-sub-video-item">
+              <span class="slide-caption">${escapeHtml(caption)}</span>
+              <div class="modal-video-container">
+                <iframe src="https://player.vimeo.com/video/${subVimeo.id}?autoplay=0&title=0&byline=0&portrait=0${subVimeo.hash ? `&h=${subVimeo.hash}` : ''}"
+                        frameborder="0"
+                        allow="autoplay; fullscreen; picture-in-picture"
+                        allowfullscreen>
+                </iframe>
+              </div>
+            </div>
+          `;
         }
       });
     }

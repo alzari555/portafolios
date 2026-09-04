@@ -474,6 +474,23 @@ a:hover {
   border: none;
 }
 
+.modal-sub-video-item,
+.modal-sub-image-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.slide-caption {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-subtle);
+  padding: 0.25rem 0;
+}
+
 /* ==========================================================================
    MODAL DE DETALLE DEL PROYECTO
    ========================================================================== */
