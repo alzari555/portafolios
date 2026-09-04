@@ -60,6 +60,20 @@
       "vimeo_source_aspect": "16:9",
       "gallery": [],
       "sub_videos": []
+    },
+    {
+      "title": "Rondot",
+      "description": "una marca personal para la que he creado una identidad superficial y material de de comunicación",
+      "image": "",
+      "format": "landscape",
+      "image_shape": "none",
+      "pdf_file": "",
+      "vimeo_url": "1108549611",
+      "video_crop": "16:9",
+      "video_align": "center",
+      "vimeo_source_aspect": "16:9",
+      "gallery": [],
+      "sub_videos": []
     }
   ]
 }
