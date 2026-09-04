@@ -32,6 +32,20 @@
           "title": ""
         }
       ]
+    },
+    {
+      "title": "hanmma",
+      "description": "linea de ropa con realidad aumentada",
+      "image": "",
+      "format": "square",
+      "image_shape": "none",
+      "pdf_file": "",
+      "vimeo_url": "1109868960",
+      "video_crop": "16:9",
+      "video_align": "center",
+      "vimeo_source_aspect": "16:9",
+      "gallery": [],
+      "sub_videos": []
     }
   ]
 }
