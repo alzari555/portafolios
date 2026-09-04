@@ -2,10 +2,74 @@
   "items": [
     {
       "title": "MB-studio",
-      "description": "un proyecto integral de rebranding que a día de hoy esta siendo aplicado en una marca de una agencia de diseño de interiores",
+      "description": "Un proyecto integral de rebranding que a día de hoy está siendo aplicado en una marca de una agencia de diseño de interiores.",
       "image": "/assets/uploads/MB-portafolios.pdf",
-      "format": "square",
+      "format": "landscape",
+      "image_shape": "none",
       "gallery": []
+    },
+    {
+      "title": "Comunicación Visual & Sistemas Gráficos",
+      "description": "Desarrollo de sistemas de identidad visual, tipografía y manuales normativos en la Universidad Nacional de Córdoba (UNC). Exploración de la síntesis formal, grillas modulares y composición equilibrada.",
+      "image": "assets/uploads/pexels-rachel-claire-4825713.webp",
+      "format": "square",
+      "image_shape": "none",
+      "gallery": [
+        {
+          "image": "assets/uploads/pexels-rachel-claire-4993081.webp"
+        },
+        {
+          "image": "assets/uploads/pexels-toulouse-3457292.webp"
+        }
+      ]
+    },
+    {
+      "title": "Modelado 3D & Simulación Visual",
+      "description": "Exploración volumétrica, geometría procedural y modelado en Blender. Texturizado PBR e integración de elementos tridimensionales sobre metraje de video con iluminación y perspectiva coherente.",
+      "image": "assets/uploads/pexels-vince-2227832.webp",
+      "format": "portrait",
+      "image_shape": "none",
+      "gallery": [
+        {
+          "image": "assets/uploads/pexels-amelia-hallsworth-5461644.webp"
+        }
+      ]
+    },
+    {
+      "title": "Tipografía Experimental & Estructura",
+      "description": "Investigación sobre ritmo tipográfico, interletrado, contrastes de peso y anatomía del tipo de letra. Aplicación en piezas de comunicación institucional y cartelería.",
+      "image": "assets/uploads/pexels-vlada-karpovich-4050318.webp",
+      "format": "landscape",
+      "image_shape": "none",
+      "gallery": [
+        {
+          "image": "assets/uploads/pexels-emrecan-2079249.webp"
+        }
+      ]
+    },
+    {
+      "title": "Dirección Gráfica & Computación Visual",
+      "description": "Articulación entre síntesis estética y automatización de procesos. Producción sistemática de variantes gráficas con rigor compositivo y enfoque anti-slop.",
+      "image": "assets/uploads/pexels-leah-newhouse-50725-6480707.webp",
+      "format": "square",
+      "image_shape": "none",
+      "gallery": [
+        {
+          "image": "assets/uploads/pexels-orlovamaria-4906249.webp"
+        }
+      ]
+    },
+    {
+      "title": "Diseño Editorial & Imprenta (CMYK)",
+      "description": "Gestión técnica de pre-prensa, curvas de color CMYK, sangrados y perfiles de salida para piezas impresas de alta precisión, publicaciones y cartelería de gran formato.",
+      "image": "assets/uploads/pexels-toulouse-3457292.webp",
+      "format": "portrait",
+      "image_shape": "none",
+      "gallery": [
+        {
+          "image": "assets/uploads/pexels-rachel-claire-4825713.webp"
+        }
+      ]
     }
   ]
 }

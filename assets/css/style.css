@@ -246,30 +246,31 @@ a:hover {
 /* Grilla Masonry exacta de emebe-pagina */
 .portfolio-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  grid-auto-rows: var(--row-height);
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-auto-rows: 10px;
+  /* Tamaño micro para cálculo granular de JS */
   grid-auto-flow: dense;
-  gap: var(--grid-gap);
-  margin-bottom: 4rem;
+  gap: 1.5rem;
+  margin-bottom: 6rem;
 }
 
-/* Tarjetas individuales de catálogo */
 .grid-item {
   position: relative;
   overflow: hidden;
   cursor: pointer;
-  background-color: #ffffff;
+  background-color: transparent;
+  /* El height automático inicial permite a JS leer la proporción */
   height: max-content;
-  border: 1px solid var(--border-color);
-  transition: border-color 0.25s ease;
+  /* Empieza oculto para ocultar los reajustes asincrónicos de tamaño de JS */
   opacity: 0;
-  animation: fadeInItem 0.7s ease forwards;
+  /* Efecto fade-in largamente retrasado y suave */
+  animation: fadeInGrid 1.2s ease 0.6s forwards;
 }
 
-@keyframes fadeInItem {
+@keyframes fadeInGrid {
   from {
     opacity: 0;
-    transform: translateY(16px);
+    transform: translateY(25px);
   }
   to {
     opacity: 1;
@@ -277,16 +278,13 @@ a:hover {
   }
 }
 
-.grid-item:hover {
-  border-color: var(--border-dark);
-}
-
 .grid-item .image-wrapper {
   position: relative;
   width: 100%;
   height: 100%;
+  /* Forzamos full height luego de que JS fije el gridRowEnd de la celda */
   overflow: hidden;
-  background-color: #ffffff;
+  background-color: transparent;
 }
 
 .grid-item img {
@@ -294,14 +292,15 @@ a:hover {
   height: 100%;
   display: block;
   object-fit: cover;
-  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  /* Recortará mínimamente para rellenar la mini-fila más cercana */
+  transition: transform 0.6s ease;
 }
 
 .grid-item:hover img {
-  transform: scale(1.025);
+  transform: scale(1.05);
 }
 
-/* Formatos de expansión */
+/* Configuraciones de Expansión Lateral */
 .format-square {
   grid-column: span 1;
 }
@@ -318,36 +317,86 @@ a:hover {
   grid-column: span 2;
 }
 
-/* Pie editorial de cada proyecto */
-.grid-item .item-meta-bar {
-  padding: 0.9rem 1.1rem;
-  background: #ffffff;
-  border-top: 1px solid var(--border-color);
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  transition: background-color 0.2s ease, color 0.2s ease;
+/* Formas geométricas / orgánicas */
+.quarter-circle-tr {
+  border-top-right-radius: 100%;
 }
 
-.grid-item:hover .item-meta-bar {
-  background-color: var(--text-color);
+.blob-shape {
+  border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+  animation: blobAnim 8s ease-in-out infinite alternate;
+}
+
+@keyframes blobAnim {
+  0% {
+    border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+  }
+  100% {
+    border-radius: 60% 40% 30% 70% / 60% 50% 40% 50%;
+  }
+}
+
+/* En dispositivos móviles, forzamos 1 sola columna independientemente del formato */
+@media (max-width: 650px) {
+  .portfolio-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .format-square,
+  .format-portrait,
+  .format-landscape {
+    grid-column: span 1;
+  }
+}
+
+/* Overlay sobre la imagen en hover (sistema de emebe-pagina con estética suiza) */
+.grid-item .overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.72);
   color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 2rem;
+  opacity: 0;
+  transition: opacity 0.4s ease;
 }
 
-.item-meta-title {
-  font-size: 0.84rem;
+.grid-item:hover .overlay {
+  opacity: 1;
+}
+
+.overlay h3 {
+  font-family: var(--font-sans);
+  color: #ffffff;
+  font-size: 1.4rem;
   font-weight: 600;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.5rem;
+  transform: translateY(20px);
+  transition: transform 0.4s ease;
 }
 
-.item-meta-index {
+.overlay span {
   font-family: var(--font-mono);
-  font-size: 0.72rem;
-  opacity: 0.6;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #e0e0e0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transform: translateY(20px);
+  transition: transform 0.4s ease 0.1s;
 }
 
-.grid-item:hover .item-meta-index {
-  opacity: 0.85;
+.grid-item:hover .overlay h3,
+.grid-item:hover .overlay span {
+  transform: translateY(0);
 }
 
 /* ==========================================================================

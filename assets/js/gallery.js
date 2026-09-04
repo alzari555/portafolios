@@ -112,31 +112,26 @@ document.addEventListener('DOMContentLoaded', async () => {
     container.innerHTML = '';
 
     items.forEach((item, index) => {
-      const format = item.format || 'square';
-      const formatClass = `format-${format}`;
+      // Formatos válidos: square, portrait, landscape (exacto a emebe-pagina)
+      const formatClass = `format-${item.format || 'square'}`;
+      const shapeVal = item.image_shape || 'none';
+      const imgCornerClass = shapeVal === 'none' ? '' : shapeVal;
       const itemIndex = String(index + 1).padStart(2, '0');
 
       const rawImagePath = cleanPath(item.image);
       const isPdfImage = rawImagePath && rawImagePath.toLowerCase().endsWith('.pdf');
-      const hasPdf = isPdfImage || Boolean(item.pdf_file);
-
-      const pdfBadge = hasPdf ? '<span class="item-pdf-tag">PDF</span>' : '';
       const initialImgSrc = isPdfImage ? '' : (rawImagePath ? `${rawImagePath}?v=${timestamp}` : '');
 
       const div = document.createElement('div');
       div.className = `grid-item ${formatClass}`;
       div.dataset.index = index;
-      div.style.animationDelay = `${index * 0.07}s`;
 
       div.innerHTML = `
-        <div class="image-wrapper">
+        <div class="image-wrapper ${imgCornerClass}">
           <img src="${initialImgSrc}" alt="${escapeHtml(item.title)}" loading="lazy">
-        </div>
-        <div class="item-meta-bar">
-          <span class="item-meta-title">${escapeHtml(item.title)}</span>
-          <div style="display: flex; align-items: center; gap: 6px;">
-            ${pdfBadge}
-            <span class="item-meta-index">${itemIndex}</span>
+          <div class="overlay">
+            <h3>${escapeHtml(item.title)}</h3>
+            <span>Ver detalles &rarr;</span>
           </div>
         </div>
       `;
@@ -149,7 +144,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       const imgNode = div.querySelector('img');
 
-      // Si la imagen de portada es un PDF, extraemos la primera diapositiva como portada de la tarjeta
+      // Si la imagen de portada es un PDF, extraemos la primera diapositiva como portada
       if (isPdfImage) {
         loadPdfJs().then(async pdfjs => {
           try {
@@ -170,7 +165,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           }
         });
       } else if (imgNode) {
-        if (imgNode.complete) {
+        if (imgNode.complete && imgNode.naturalWidth > 0) {
           resizeGridItem(div, imgNode);
         } else {
           imgNode.addEventListener('load', () => {
@@ -186,23 +181,20 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   // --------------------------------------------------------------------------
-  // Algoritmo de Grilla Masonry (Lógica de emebe-pagina con compensación de barra)
+  // Algoritmo de Grilla Masonry (Lógica exacta de emebe-pagina)
   // --------------------------------------------------------------------------
   function resizeGridItem(item, img) {
     const rowHeight = 10;
-    const rowGap = 28;
+    const rowGap = 24; // 1.5rem = 24px
     const gridColWidth = item.getBoundingClientRect().width;
-
-    const metaBar = item.querySelector('.item-meta-bar');
-    const metaHeight = metaBar ? metaBar.offsetHeight : 44;
 
     let targetHeight;
     if (item.classList.contains('format-square')) {
-      targetHeight = gridColWidth + metaHeight;
+      targetHeight = gridColWidth;
     } else {
       const naturalRatio = img.naturalWidth / img.naturalHeight;
       if (!naturalRatio || isNaN(naturalRatio)) return;
-      targetHeight = (gridColWidth / naturalRatio) + metaHeight;
+      targetHeight = gridColWidth / naturalRatio;
     }
 
     const rowSpan = Math.ceil((targetHeight + rowGap) / (rowHeight + rowGap));
@@ -219,11 +211,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  let resizeTimeout;
-  window.addEventListener('resize', () => {
-    clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(resizeAllGridItems, 80);
-  });
+  window.addEventListener('resize', resizeAllGridItems);
 
   // --------------------------------------------------------------------------
   // Apertura del Modal y Extracción de Diapositivas PDF
