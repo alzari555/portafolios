@@ -74,6 +74,20 @@
       "vimeo_source_aspect": "16:9",
       "gallery": [],
       "sub_videos": []
+    },
+    {
+      "title": "montaje para campaña",
+      "description": "un montaje para una campaña de una web para tu estilo hecho en montajes en 3d",
+      "image": "",
+      "format": "square",
+      "image_shape": "none",
+      "pdf_file": "",
+      "vimeo_url": "1224100443",
+      "video_crop": "16:9",
+      "video_align": "center",
+      "vimeo_source_aspect": "16:9",
+      "gallery": [],
+      "sub_videos": []
     }
   ]
 }
