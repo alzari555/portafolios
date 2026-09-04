@@ -83,9 +83,9 @@
       "image_shape": "none",
       "pdf_file": "",
       "vimeo_url": "1224100443",
-      "video_crop": "4:5",
+      "video_crop": "4:3",
       "video_align": "center",
-      "vimeo_source_aspect": "9:16",
+      "vimeo_source_aspect": "",
       "gallery": [],
       "sub_videos": []
     }
