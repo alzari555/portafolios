@@ -2,92 +2,81 @@
   "items": [
     {
       "title": "MB-studio",
-      "description": "Un proyecto integral de rebranding que a día de hoy está siendo aplicado en una marca de una agencia de diseño de interiores.",
+      "description": "Proyecto integral de rebranding e identidad visual para un estudio de diseño de interiores y arquitectura efímera. El sistema articula una retícula tipográfica sobria, paleta cromática de bajo contraste y aplicaciones espaciales, editoriales y de señalética que dialogan directamente con la materialidad del espacio.",
       "image": "/assets/uploads/MB-portafolios.pdf",
       "format": "landscape",
       "image_shape": "none",
       "pdf_file": "",
       "vimeo_url": "",
-      "video_crop": "16:9",
-      "video_align": "center",
-      "vimeo_source_aspect": "16:9",
-      "gallery": [],
-      "sub_videos": []
+      "video_aspect": "auto",
+      "video_fit": "cover",
+      "gallery": []
     },
     {
       "title": "proyectos 3D",
-      "description": "animaciones no oficiales con marcas conocidas",
+      "description": "Exploraciones especulativas de animación 3D y renderizado de producto desarrolladas en Blender. Se profundiza en el comportamiento de la luz, simulaciones de dinámicas físicas, texturizado procedural y cinemáticas de cámara precisas, reinterpretando la presencia material de marcas contemporáneas.",
       "image": "",
       "format": "square",
       "image_shape": "none",
       "pdf_file": "",
       "vimeo_url": "1101316855",
-      "video_crop": "1:1",
-      "video_align": "center",
-      "vimeo_source_aspect": "1:1",
-      "gallery": [],
-      "sub_videos": [
+      "video_aspect": "1:1",
+      "video_fit": "cover",
+      "gallery": [
         {
           "vimeo_url": "1108564412",
-          "title": ""
+          "video_aspect": "16:9",
+          "title": "Exploración cinemática 16:9"
         }
       ]
     },
     {
       "title": "hanmma",
-      "description": "linea de ropa con realidad aumentada",
+      "description": "Cápsula de indumentaria experimental y streetwear que converge con tecnologías de Realidad Aumentada (AR). El proyecto plantea un diálogo bidireccional entre el soporte textil físico y la capa digital interactiva, explorando el modelado de prendas en 3D, morfologías futuristas y nuevas formas de habitabilidad digital.",
       "image": "",
       "format": "square",
       "image_shape": "none",
       "pdf_file": "",
       "vimeo_url": "1109868960",
-      "video_crop": "16:9",
-      "video_align": "center",
-      "vimeo_source_aspect": "16:9",
-      "gallery": [],
-      "sub_videos": []
+      "video_aspect": "1:1",
+      "video_fit": "cover",
+      "gallery": []
     },
     {
-      "title": "80 caracrteres",
-      "description": "manual de marca de una agencia que supo estar en funcionamiento",
+      "title": "80 caracteres",
+      "description": "Manual de normas de identidad visual y sistema gráfico modular para agencia de comunicación. Comprende la estructuración modular de la marca, jerarquías tipográficas, retículas compositivas y pautas de colorimetría para garantizar una implementación coherente en soportes impresos y plataformas digitales.",
       "image": "/assets/uploads/Captura de pantalla 2026-09-04 162753.png",
       "format": "landscape",
       "image_shape": "none",
       "pdf_file": "/assets/uploads/manual y recursos 80C.pdf",
       "vimeo_url": "",
-      "video_crop": "16:9",
-      "video_align": "center",
-      "vimeo_source_aspect": "16:9",
-      "gallery": [],
-      "sub_videos": []
+      "video_aspect": "auto",
+      "video_fit": "cover",
+      "gallery": []
     },
     {
       "title": "Rondot",
-      "description": "una marca personal para la que he creado una identidad superficial y material de de comunicación",
+      "description": "Construcción de identidad y sistema de comunicación visual para marca personal. El desarrollo abarca el diseño del signo marcario, definición de la retícula compositiva, dirección de arte sobria y producción de piezas gráficas y digitales concebidas para proyectar coherencia, cercanía y solidez profesional.",
       "image": "",
       "format": "square",
       "image_shape": "none",
       "pdf_file": "",
       "vimeo_url": "1108549611",
-      "video_crop": "16:9",
-      "video_align": "center",
-      "vimeo_source_aspect": "1:1",
-      "gallery": [],
-      "sub_videos": []
+      "video_aspect": "1:1",
+      "video_fit": "cover",
+      "gallery": []
     },
     {
       "title": "montaje para campaña",
-      "description": "un montaje para una campaña de una web para tu estilo hecho en montajes en 3d",
+      "description": "Dirección de arte y composición 3D para campaña digital orientada a plataforma de e-commerce y estilo de vida. Mediante escenografías virtuales, iluminación controlada y un montaje audiovisual en formato vertical, se genera una narrativa visual inmersiva de alto impacto para pantallas contemporáneas.",
       "image": "",
       "format": "portrait",
       "image_shape": "none",
       "pdf_file": "",
       "vimeo_url": "1224100443",
-      "video_crop": "4:5",
-      "video_align": "center",
-      "vimeo_source_aspect": "9:16",
-      "gallery": [],
-      "sub_videos": []
+      "video_aspect": "3:4",
+      "video_fit": "cover",
+      "gallery": []
     }
   ]
 }

@@ -205,7 +205,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       div.dataset.index = index;
       if (hasVimeo) {
         div.dataset.hasVimeo = 'true';
-        const configuredAspect = item.video_aspect || 'auto';
+        const configuredAspect = item.video_aspect || item.vimeo_source_aspect || item.video_crop || 'auto';
         const defaultRatio = format === 'portrait' ? 0.75 : (format === 'square' ? 1.0 : (16 / 9));
         const initialRatio = (configuredAspect !== 'auto')
           ? parseAspect(configuredAspect, defaultRatio)
@@ -407,7 +407,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Si tiene video de Vimeo, inyectamos el reproductor con audio en el modal
     const vimeoData = parseVimeo(item.vimeo_url);
     if (vimeoData && vimeoData.id) {
-      const configuredAspect = item.video_aspect || 'auto';
+      const configuredAspect = item.video_aspect || item.vimeo_source_aspect || item.video_crop || 'auto';
       const defaultModalRatio = (item.format === 'portrait' ? 0.75 : (item.format === 'square' ? 1.0 : (16 / 9)));
       const videoRatio = (configuredAspect !== 'auto')
         ? parseAspect(configuredAspect, defaultModalRatio)
