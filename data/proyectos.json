@@ -46,6 +46,20 @@
       "vimeo_source_aspect": "16:9",
       "gallery": [],
       "sub_videos": []
+    },
+    {
+      "title": "80 caracrteres",
+      "description": "manual de marca de una agencia que supo estar en funcionamiento",
+      "image": "/assets/uploads/Captura de pantalla 2026-09-04 162753.png",
+      "format": "square",
+      "image_shape": "none",
+      "pdf_file": "/assets/uploads/manual y recursos 80C.pdf",
+      "vimeo_url": "",
+      "video_crop": "16:9",
+      "video_align": "center",
+      "vimeo_source_aspect": "16:9",
+      "gallery": [],
+      "sub_videos": []
     }
   ]
 }
