@@ -29,6 +29,10 @@
       "image": "assets/uploads/pexels-vince-2227832.webp",
       "format": "portrait",
       "image_shape": "none",
+      "vimeo_url": "https://vimeo.com/1084537",
+      "video_crop": "4:5",
+      "video_align": "center",
+      "vimeo_source_aspect": "16:9",
       "gallery": [
         {
           "image": "assets/uploads/pexels-amelia-hallsworth-5461644.webp"

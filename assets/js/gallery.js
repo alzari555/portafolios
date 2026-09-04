@@ -85,6 +85,37 @@ document.addEventListener('DOMContentLoaded', async () => {
     return p.startsWith('/') ? p.substring(1) : p;
   }
 
+  // Helper para parsear URLs o IDs de Vimeo
+  function parseVimeo(urlOrId) {
+    if (!urlOrId) return null;
+    const str = String(urlOrId).trim();
+    if (/^\d+$/.test(str)) {
+      return { id: str, hash: '' };
+    }
+    const regExp = /(?:vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/[^\/]+\/videos\/|video\/|)(\d+))(?:(?:\/|\?h=)([a-zA-Z0-9]+))?/;
+    const match = str.match(regExp);
+    if (match && match[1]) {
+      return { id: match[1], hash: match[2] || '' };
+    }
+    const digitsMatch = str.match(/\b(\d{7,11})\b/);
+    if (digitsMatch) {
+      return { id: digitsMatch[1], hash: '' };
+    }
+    return null;
+  }
+
+  // Helper para parsear proporciones de recorte tipo "16:9", "1:1", "9:16", "4:5", "21:9", "4:3"
+  function parseCropRatio(cropStr, fallbackRatio = 16 / 9) {
+    if (!cropStr) return fallbackRatio;
+    const parts = String(cropStr).trim().split(':');
+    if (parts.length === 2) {
+      const num = parseFloat(parts[0]);
+      const den = parseFloat(parts[1]);
+      if (num && den) return num / den;
+    }
+    return fallbackRatio;
+  }
+
   // --------------------------------------------------------------------------
   // Carga asíncrona de datos desde data/proyectos.json
   // --------------------------------------------------------------------------
@@ -122,16 +153,50 @@ document.addEventListener('DOMContentLoaded', async () => {
       const isPdfImage = rawImagePath && rawImagePath.toLowerCase().endsWith('.pdf');
       const initialImgSrc = isPdfImage ? '' : (rawImagePath ? `${rawImagePath}?v=${timestamp}` : '');
 
+      const vimeoData = parseVimeo(item.vimeo_url);
+      const hasVimeo = Boolean(vimeoData && vimeoData.id);
+      const defaultCrop = item.format === 'square' ? '1:1' : (item.format === 'portrait' ? '9:16' : '16:9');
+      const cropRatio = parseCropRatio(item.video_crop || defaultCrop);
+      const sourceRatio = parseCropRatio(item.vimeo_source_aspect || '16:9');
+      const videoAlign = item.video_align || 'center';
+
+      let mediaHtml = '';
+      if (hasVimeo) {
+        const bgVimeoUrl = `https://player.vimeo.com/video/${vimeoData.id}?background=1&autoplay=1&loop=1&byline=0&title=0&muted=1&playsinline=1&autopause=0${vimeoData.hash ? `&h=${vimeoData.hash}` : ''}`;
+        mediaHtml = `
+          ${rawImagePath ? `<img src="${rawImagePath}?v=${timestamp}" alt="${escapeHtml(item.title)}" class="vimeo-fallback-poster" loading="lazy">` : ''}
+          <div class="vimeo-wrapper">
+            <iframe src="${bgVimeoUrl}"
+                    frameborder="0"
+                    allow="autoplay; fullscreen; picture-in-picture"
+                    tabindex="-1"
+                    title="${escapeHtml(item.title)}"
+                    data-source-ratio="${sourceRatio}"
+                    data-crop-align="${videoAlign}">
+            </iframe>
+          </div>
+        `;
+      } else {
+        mediaHtml = `<img src="${initialImgSrc}" alt="${escapeHtml(item.title)}" loading="lazy">`;
+      }
+
       const div = document.createElement('div');
       div.className = `grid-item ${formatClass}`;
       div.dataset.index = index;
+      if (hasVimeo) {
+        div.dataset.hasVimeo = 'true';
+        div.dataset.cropRatio = cropRatio;
+        div.dataset.cropAlign = videoAlign;
+        div.dataset.sourceRatio = sourceRatio;
+      }
 
       div.innerHTML = `
         <div class="image-wrapper ${imgCornerClass}">
-          <img src="${initialImgSrc}" alt="${escapeHtml(item.title)}" loading="lazy">
+          ${mediaHtml}
           <div class="overlay">
+            ${hasVimeo ? '<span class="overlay-badge">VIDEO</span>' : ''}
             <h3>${escapeHtml(item.title)}</h3>
-            <span>Ver detalles &rarr;</span>
+            <span>${hasVimeo ? 'Reproducir video &rarr;' : 'Ver detalles &rarr;'}</span>
           </div>
         </div>
       `;
@@ -142,10 +207,19 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       container.appendChild(div);
 
-      const imgNode = div.querySelector('img');
+      if (hasVimeo) {
+        resizeGridItem(div, null);
+        const iframe = div.querySelector('.vimeo-wrapper iframe');
+        if (iframe) {
+          iframe.addEventListener('load', () => updateVimeoSizing(div));
+        }
+        setTimeout(() => updateVimeoSizing(div), 60);
+      }
+
+      const imgNode = div.querySelector('img:not(.vimeo-fallback-poster)');
 
       // Si la imagen de portada es un PDF, extraemos la primera diapositiva como portada
-      if (isPdfImage) {
+      if (isPdfImage && imgNode) {
         loadPdfJs().then(async pdfjs => {
           try {
             const loadingTask = pdfjs.getDocument(`${rawImagePath}?v=${timestamp}`);
@@ -164,7 +238,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.error('Error al extraer portada de PDF:', e);
           }
         });
-      } else if (imgNode) {
+      } else if (imgNode && !hasVimeo) {
         if (imgNode.complete && imgNode.naturalWidth > 0) {
           resizeGridItem(div, imgNode);
         } else {
@@ -181,7 +255,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   // --------------------------------------------------------------------------
-  // Algoritmo de Grilla Masonry (Lógica exacta de emebe-pagina)
+  // Algoritmo de Grilla Masonry & Recorte de Videos
   // --------------------------------------------------------------------------
   function resizeGridItem(item, img) {
     const rowHeight = 10;
@@ -191,21 +265,76 @@ document.addEventListener('DOMContentLoaded', async () => {
     let targetHeight;
     if (item.classList.contains('format-square')) {
       targetHeight = gridColWidth;
-    } else {
+    } else if (item.dataset.hasVimeo === 'true') {
+      const cropRatio = parseFloat(item.dataset.cropRatio) || (16 / 9);
+      targetHeight = gridColWidth / cropRatio;
+    } else if (img) {
       const naturalRatio = img.naturalWidth / img.naturalHeight;
       if (!naturalRatio || isNaN(naturalRatio)) return;
       targetHeight = gridColWidth / naturalRatio;
+    } else {
+      targetHeight = gridColWidth * 0.75;
     }
 
     const rowSpan = Math.ceil((targetHeight + rowGap) / (rowHeight + rowGap));
     item.style.gridRowEnd = 'span ' + rowSpan;
+
+    if (item.dataset.hasVimeo === 'true') {
+      updateVimeoSizing(item);
+    }
+  }
+
+  // Ajuste de escala y encuadre para object-fit cover en iframes de Vimeo
+  function updateVimeoSizing(item) {
+    const iframe = item.querySelector('.vimeo-wrapper iframe');
+    const wrapper = item.querySelector('.image-wrapper');
+    if (!iframe || !wrapper) return;
+
+    const w = wrapper.clientWidth;
+    const h = wrapper.clientHeight;
+    if (!w || !h) return;
+
+    const sourceRatio = parseFloat(iframe.dataset.sourceRatio) || (16 / 9);
+    const containerRatio = w / h;
+    const align = iframe.dataset.cropAlign || 'center';
+
+    let finalW, finalH;
+    if (containerRatio > sourceRatio) {
+      finalW = w;
+      finalH = w / sourceRatio;
+    } else {
+      finalH = h;
+      finalW = h * sourceRatio;
+    }
+
+    iframe.style.width = `${Math.ceil(finalW)}px`;
+    iframe.style.height = `${Math.ceil(finalH)}px`;
+
+    if (align === 'top') {
+      iframe.style.top = '0';
+      iframe.style.bottom = 'auto';
+      iframe.style.left = '50%';
+      iframe.style.transform = 'translateX(-50%)';
+    } else if (align === 'bottom') {
+      iframe.style.top = 'auto';
+      iframe.style.bottom = '0';
+      iframe.style.left = '50%';
+      iframe.style.transform = 'translateX(-50%)';
+    } else {
+      iframe.style.top = '50%';
+      iframe.style.bottom = 'auto';
+      iframe.style.left = '50%';
+      iframe.style.transform = 'translate(-50%, -50%)';
+    }
   }
 
   function resizeAllGridItems() {
     const allItems = document.querySelectorAll('.grid-item');
     allItems.forEach(item => {
-      const img = item.querySelector('img');
-      if (img && img.complete) {
+      const img = item.querySelector('img:not(.vimeo-fallback-poster)');
+      if (item.dataset.hasVimeo === 'true') {
+        resizeGridItem(item, null);
+      } else if (img && img.complete && img.naturalWidth > 0) {
         resizeGridItem(item, img);
       }
     });
@@ -214,7 +343,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   window.addEventListener('resize', resizeAllGridItems);
 
   // --------------------------------------------------------------------------
-  // Apertura del Modal y Extracción de Diapositivas PDF
+  // Apertura del Modal y Extracción de Diapositivas PDF / Video
   // --------------------------------------------------------------------------
   async function openModal(item, timestamp, itemIndex) {
     if (!modal) return;
@@ -230,10 +359,25 @@ document.addEventListener('DOMContentLoaded', async () => {
     const isPdfImage = rawImagePath && rawImagePath.toLowerCase().endsWith('.pdf');
     const targetPdf = item.pdf_file ? cleanPath(item.pdf_file) : (isPdfImage ? rawImagePath : null);
 
-    // Contenedor de imágenes
+    // Contenedor de imágenes y multimedia
     let imagesHtml = '';
-    // Solo inyectar como imagen bitmap si NO es un archivo PDF
-    if (rawImagePath && !isPdfImage) {
+
+    // Si tiene video de Vimeo, inyectamos el reproductor con audio en el modal
+    const vimeoData = parseVimeo(item.vimeo_url);
+    if (vimeoData && vimeoData.id) {
+      imagesHtml += `
+        <div class="modal-video-container">
+          <iframe src="https://player.vimeo.com/video/${vimeoData.id}?autoplay=1&title=0&byline=0&portrait=0${vimeoData.hash ? `&h=${vimeoData.hash}` : ''}"
+                  frameborder="0"
+                  allow="autoplay; fullscreen; picture-in-picture"
+                  allowfullscreen>
+          </iframe>
+        </div>
+      `;
+    }
+
+    // Inyectar como imagen bitmap si NO es un archivo PDF y NO hay video principal
+    if (rawImagePath && !isPdfImage && !(vimeoData && vimeoData.id)) {
       imagesHtml += `<img src="${rawImagePath}?v=${timestamp}" alt="${escapeHtml(item.title)}" class="main-modal-img">`;
     }
 
@@ -250,6 +394,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     modalImages.innerHTML = imagesHtml;
+
+    // Enlace a Vimeo en los metadatos del modal
+    const modalSpecs = modal.querySelector('.modal-specs');
+    if (modalSpecs) {
+      const existingVimeoLink = modalSpecs.querySelector('.vimeo-download-link');
+      if (existingVimeoLink) existingVimeoLink.remove();
+
+      if (vimeoData && vimeoData.id) {
+        const vimeoLink = document.createElement('a');
+        vimeoLink.href = `https://vimeo.com/${vimeoData.id}`;
+        vimeoLink.target = '_blank';
+        vimeoLink.className = 'pdf-download-link vimeo-download-link';
+        vimeoLink.innerHTML = '<span>Ver video en Vimeo</span> &nearr;';
+        modalSpecs.appendChild(vimeoLink);
+      }
+    }
 
     // Si hay un PDF vinculado (sea en image o en pdf_file), extraer sus diapositivas
     if (targetPdf) {

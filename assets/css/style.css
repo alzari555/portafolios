@@ -363,11 +363,33 @@ a:hover {
   justify-content: flex-end;
   padding: 2rem;
   opacity: 0;
+  z-index: 2;
   transition: opacity 0.4s ease;
 }
 
 .grid-item:hover .overlay {
   opacity: 1;
+}
+
+.overlay-badge {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  padding: 3px 8px;
+  margin-bottom: 0.6rem;
+  display: inline-block;
+  width: fit-content;
+  backdrop-filter: blur(4px);
+  transform: translateY(20px);
+  transition: transform 0.4s ease;
+}
+
+.grid-item:hover .overlay-badge {
+  transform: translateY(0);
 }
 
 .overlay h3 {
@@ -397,6 +419,59 @@ a:hover {
 .grid-item:hover .overlay h3,
 .grid-item:hover .overlay span {
   transform: translateY(0);
+}
+
+/* Reproductor de Video de Vimeo en Grilla (Background silencioso recortado) */
+.vimeo-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  background-color: #000000;
+  z-index: 1;
+}
+
+.vimeo-wrapper iframe {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: none;
+  pointer-events: none;
+  /* El dimensionamiento dinámico granular se aplica desde JS para object-fit cover sin bandas negras */
+}
+
+.vimeo-fallback-poster {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+/* Contenedor de Video interactivo con audio en Modal */
+.modal-video-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background-color: #000000;
+  overflow: hidden;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 1.5rem;
+}
+
+.modal-video-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
 }
 
 /* ==========================================================================
