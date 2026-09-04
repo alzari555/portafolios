@@ -12,6 +12,19 @@
       "video_align": "center",
       "vimeo_source_aspect": "16:9",
       "gallery": []
+    },
+    {
+      "title": "proyectos 3D",
+      "description": "animaciones no oficiales con marcas conocidas",
+      "image": "",
+      "format": "square",
+      "image_shape": "none",
+      "pdf_file": "",
+      "vimeo_url": "1101316855",
+      "video_crop": "4:5",
+      "video_align": "center",
+      "vimeo_source_aspect": "16:9",
+      "gallery": []
     }
   ]
 }
