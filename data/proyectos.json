@@ -11,7 +11,8 @@
       "video_crop": "16:9",
       "video_align": "center",
       "vimeo_source_aspect": "16:9",
-      "gallery": []
+      "gallery": [],
+      "sub_videos": []
     },
     {
       "title": "proyectos 3D",
@@ -24,7 +25,13 @@
       "video_crop": "1:1",
       "video_align": "center",
       "vimeo_source_aspect": "1:1",
-      "gallery": []
+      "gallery": [],
+      "sub_videos": [
+        {
+          "vimeo_url": "1108564412",
+          "title": ""
+        }
+      ]
     }
   ]
 }
