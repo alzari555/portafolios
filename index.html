@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Miguel Alzari — Comunicación Visual & Diseño</title>
+  <meta name="description" content="Portafolio de Miguel Alzari. Comunicación Visual (UNC), sistemas de identidad, tipografía y modelado 3D.">
+
+  <!-- Estilos editoriales -->
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+  <!-- Canvas de fondo: Retícula Áurea Fractal Implícita & Trama Editorial 3D -->
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- Hero Section: Parte superior 100% liberada, centrado horizontal, justificado a la derecha -->
+  <section class="hero-section" id="hero">
+    <div class="hero-container">
+      <span class="hero-tag">Miguel Alzari &bull; 2026</span>
+      <p class="hero-paragraph">
+        Diseñador en Comunicación Visual egresado de la <strong>Universidad Nacional de Córdoba (UNC)</strong>. Desarrollo de sistemas de identidad, tipografía, modelado 3D y producción gráfica digital. Exploración formal guiada por la estructura, la síntesis y la sobriedad visual.
+      </p>
+
+      <!-- Navegación integrada debajo del texto central -->
+      <nav class="hero-nav" aria-label="Navegación principal">
+        <a href="#proyectos" class="hero-nav-link"><span>01 /</span> Proyectos</a>
+        <a href="#perfil" class="hero-nav-link"><span>02 /</span> Perfil</a>
+        <a href="#contacto" class="hero-nav-link"><span>03 /</span> Contacto</a>
+      </nav>
+
+      <div class="hero-meta">
+        <span>Carlos Paz, Córdoba &bull; Argentina</span>
+        <span>Universidad Nacional de Córdoba</span>
+      </div>
+    </div>
+
+    <!-- Indicador de desplazamiento: solo flecha en 'v' con ángulo abierto -->
+    <a href="#proyectos" class="scroll-indicator" aria-label="Ir a proyectos">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="4 9.5 12 15 20 9.5"></polyline>
+      </svg>
+    </a>
+  </section>
+
+  <!-- Galería de Proyectos: Catálogo Masonry conectado a data/proyectos.json -->
+  <main>
+    <section class="gallery-section" id="proyectos">
+      <div class="section-header">
+        <h2 class="section-title">Proyectos Seleccionados</h2>
+        <span class="section-count" id="project-count">01 &mdash; 06</span>
+      </div>
+
+      <!-- Contenedor dinámico de la grilla -->
+      <div id="gallery-container" class="portfolio-grid">
+        <!-- Los ítems se inyectan dinámicamente desde data/proyectos.json -->
+      </div>
+    </section>
+
+    <!-- Resumen Editorial de Perfil & Disciplinas -->
+    <section class="profile-section" id="perfil">
+      <div class="section-header">
+        <h2 class="section-title">Disciplinas & Competencias</h2>
+        <span class="section-count">[ UNC ]</span>
+      </div>
+
+      <div class="competencies-grid">
+        <div class="competency-item">
+          <h3><span>01 /</span> Sistemas de Identidad & Tipografía</h3>
+          <p>
+            Graduado en Comunicación Visual en la Universidad Nacional de Córdoba. Desarrollo metódico de sistemas de marca, diseño de familias tipográficas, jerarquías de lectura y manuales normativos.
+          </p>
+        </div>
+
+        <div class="competency-item">
+          <h3><span>02 /</span> Modelado 3D & Espacio Virtual</h3>
+          <p>
+            Construcción volumétrica procedural y modelado en Blender. Texturizado PBR, iluminación física e integración de elementos tridimensionales sobre metraje con coherencia espacial.
+          </p>
+        </div>
+
+        <div class="competency-item">
+          <h3><span>03 /</span> Gráfica Editorial & Pre-Prensa</h3>
+          <p>
+            Dominio riguroso de perfiles de color CMYK, sangrados, troquelados técnicos y calibración de impresión para publicaciones editoriales, papelería y cartelería de gran formato.
+          </p>
+        </div>
+
+        <div class="competency-item">
+          <h3><span>04 /</span> Computación Visual & Automatización</h3>
+          <p>
+            Articulación entre estética visual y arquitectura computacional: flujos automatizados de producción gráfica, estructuración de datos y optimización digital sin saturación ornamental.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal de Detalle de Proyecto -->
+  <dialog id="project-modal" class="project-modal">
+    <div class="modal-inner">
+      <div class="modal-header-bar">
+        <span class="modal-header-title" id="modal-format">PROYECTO SELECCIONADO</span>
+        <button id="close-modal" class="close-btn" aria-label="Cerrar modal">&times;</button>
+      </div>
+      <div class="modal-grid">
+        <div class="modal-image-col" id="modal-images">
+          <!-- Imágenes inyectadas dinámicamente -->
+        </div>
+        <div class="modal-text-col">
+          <h2 id="modal-title" class="modal-title"></h2>
+          <p id="modal-desc" class="modal-desc"></p>
+          <div class="modal-specs">
+            <span>PROYECTO &bull; MIGUEL ALZARI</span>
+            <span>UNIVERSIDAD NACIONAL DE CÓRDOBA</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Pie de página / Contacto -->
+  <footer class="site-footer" id="contacto">
+    <div class="footer-content">
+      <div class="footer-main">
+        <h2>Contacto</h2>
+        <p>
+          Disponible para proyectos de diseño visual, identidad corporativa y producciones volumétricas tridimensionales. Residencia en Carlos Paz, Córdoba.
+        </p>
+      </div>
+      <div class="footer-col">
+        <h3>Canales</h3>
+        <ul>
+          <li><a href="mailto:miguelalzari+job@gmail.com">miguelalzari+job@gmail.com</a></li>
+          <li><span>Carlos Paz, Córdoba &bull; AR</span></li>
+          <li><a href="https://github.com/alzari555" target="_blank" rel="noopener">github.com/alzari555</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 Miguel Alzari. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="assets/js/canvas-fx.js"></script>
+  <script src="assets/js/gallery.js"></script>
+</body>
+</html>

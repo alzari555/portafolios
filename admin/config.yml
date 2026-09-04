@@ -1,0 +1,36 @@
+backend:
+  name: github
+  repo: alzari555/portafolios
+  branch: main
+
+# Soporte para proxy local si se ejecuta npx @sveltia/cms-proxy
+local_backend: true
+
+media_folder: "assets/uploads"
+public_folder: "assets/uploads"
+
+collections:
+  - name: "proyectos"
+    label: "Proyectos del Portafolio"
+    editor:
+      preview: false
+    files:
+      - label: "Gestor de Proyectos"
+        name: "proyectos"
+        file: "data/proyectos.json"
+        description: "Añade, edita y organiza los proyectos que aparecerán en la grilla del portafolio."
+        fields:
+          - label: "Proyectos"
+            name: "items"
+            widget: "list"
+            fields:
+              - {label: "Título", name: "title", widget: "string"}
+              - {label: "Descripción", name: "description", widget: "text"}
+              - {label: "Imagen Principal", name: "image", widget: "image"}
+              - {label: "Formato en Grilla", name: "format", widget: "select", options: [{label: "Cuadrada (1 Columna)", value: "square"}, {label: "Vertical (1 Columna)", value: "portrait"}, {label: "Horizontal (2 Columnas)", value: "landscape"}], default: "square"}
+              - label: "Galería Adicional (Opcional)"
+                name: "gallery"
+                widget: "list"
+                required: false
+                fields:
+                  - {label: "Imagen Extra", name: "image", widget: "image"}

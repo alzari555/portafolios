@@ -1,0 +1,73 @@
+{
+  "items": [
+    {
+      "title": "Comunicación Visual & Sistemas Gráficos",
+      "description": "Desarrollo de sistemas de identidad visual, tipografía y manuales normativos en la Universidad Nacional de Córdoba (UNC). Exploración de la síntesis formal, grillas modulares y composición equilibrada.",
+      "image": "assets/uploads/pexels-rachel-claire-4825713.webp",
+      "format": "landscape",
+      "gallery": [
+        {
+          "image": "assets/uploads/pexels-rachel-claire-4993081.webp"
+        },
+        {
+          "image": "assets/uploads/pexels-toulouse-3457292.webp"
+        }
+      ]
+    },
+    {
+      "title": "Modelado 3D & Simulación Visual",
+      "description": "Exploración volumétrica, geometría procedural y modelado en Blender. Texturizado PBR e integración de elementos tridimensionales sobre metraje de video con iluminación y perspectiva coherente.",
+      "image": "assets/uploads/pexels-vince-2227832.webp",
+      "format": "square",
+      "gallery": [
+        {
+          "image": "assets/uploads/pexels-amelia-hallsworth-5461644.webp"
+        }
+      ]
+    },
+    {
+      "title": "Tipografía Experimental & Estructura",
+      "description": "Investigación sobre ritmo tipográfico, interletrado, contrastes de peso y anatomía del tipo de letra. Aplicación en piezas de comunicación institucional y cartelería.",
+      "image": "assets/uploads/pexels-vlada-karpovich-4050318.webp",
+      "format": "portrait",
+      "gallery": [
+        {
+          "image": "assets/uploads/pexels-emrecan-2079249.webp"
+        }
+      ]
+    },
+    {
+      "title": "Dirección Gráfica & Computación Visual",
+      "description": "Articulación entre síntesis estética y automatización de procesos. Producción sistemática de variantes gráficas con rigor compositivo y enfoque anti-slop.",
+      "image": "assets/uploads/pexels-leah-newhouse-50725-6480707.webp",
+      "format": "landscape",
+      "gallery": [
+        {
+          "image": "assets/uploads/pexels-orlovamaria-4906249.webp"
+        }
+      ]
+    },
+    {
+      "title": "Diseño Editorial & Imprenta (CMYK)",
+      "description": "Gestión técnica de pre-prensa, curvas de color CMYK, sangrados y perfiles de salida para piezas impresas de alta precisión, publicaciones y cartelería de gran formato.",
+      "image": "assets/uploads/pexels-toulouse-3457292.webp",
+      "format": "square",
+      "gallery": [
+        {
+          "image": "assets/uploads/pexels-rachel-claire-4825713.webp"
+        }
+      ]
+    },
+    {
+      "title": "Producción Audiovisual & Etalonaje",
+      "description": "Corrección de color cinematográfica, etalonaje (color grading) y montaje rítmico para piezas audiovisuales, narrativa visual y contenido de marca.",
+      "image": "assets/uploads/pexels-orlovamaria-4906249.webp",
+      "format": "portrait",
+      "gallery": [
+        {
+          "image": "assets/uploads/services_bg.webp"
+        }
+      ]
+    }
+  ]
+}
