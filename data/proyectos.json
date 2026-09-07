@@ -3,105 +3,138 @@
     {
       "title": "MB-studio",
       "description": "Un proyecto integral de rebranding que a día de hoy está siendo aplicado en una marca de una agencia de diseño de interiores.",
-      "image": "/assets/uploads/MB-portafolios.pdf",
       "format": "landscape",
+      "image": "/assets/uploads/MB-portafolios.pdf",
       "image_shape": "none",
-      "pdf_file": "",
       "vimeo_url": "",
-      "video_crop": "16:9",
-      "video_align": "center",
-      "vimeo_source_aspect": "16:9",
+      "video_aspect": "auto",
+      "video_fit": "cover",
+      "pdf_file": "",
       "gallery": [],
-      "sub_videos": []
+      "sub_videos": [],
+      "video_align": "center",
+      "video_crop": "16:9",
+      "vimeo_source_aspect": "16:9"
     },
     {
       "title": "MB-studio material comunicacional",
       "description": "un pequeño apéndice para mostrar mas sobre el sistema visual de MB",
-      "image": "/assets/uploads/Captura de pantalla 2026-09-04 184851.png",
       "format": "landscape",
+      "image": "/assets/uploads/Captura de pantalla 2026-09-04 184851.png",
       "image_shape": "none",
-      "pdf_file": "",
       "vimeo_url": "",
-      "video_crop": "16:9",
+      "video_aspect": "auto",
+      "video_fit": "cover",
+      "pdf_file": "/assets/uploads/Captura de pantalla 2026-09-04 190001.png",
+      "gallery": [
+        {
+          "image": "/assets/uploads/Captura de pantalla 2026-09-04 185940.png",
+          "vimeo_url": "",
+          "video_aspect": "auto",
+          "title": ""
+        },
+        {
+          "image": "/assets/uploads/Propuesta Estudio EMEBE.png",
+          "vimeo_url": "",
+          "video_aspect": "auto",
+          "title": ""
+        },
+        {
+          "image": "/assets/uploads/2.svg",
+          "vimeo_url": "",
+          "video_aspect": "auto",
+          "title": ""
+        }
+      ],
+      "sub_videos": [],
       "video_align": "center",
-      "vimeo_source_aspect": "16:9",
-      "gallery": [],
-      "sub_videos": []
+      "video_crop": "16:9",
+      "vimeo_source_aspect": "16:9"
     },
     {
       "title": "Proyectos 3D",
       "description": "animaciones no oficiales con marcas conocidas",
-      "image": "",
       "format": "square",
+      "image": "",
       "image_shape": "none",
-      "pdf_file": "",
       "vimeo_url": "1101316855",
-      "video_crop": "1:1",
-      "video_align": "center",
-      "vimeo_source_aspect": "1:1",
+      "video_aspect": "auto",
+      "video_fit": "cover",
+      "pdf_file": "",
       "gallery": [],
       "sub_videos": [
         {
-          "vimeo_url": "1108564412",
-          "title": ""
+          "title": "",
+          "vimeo_url": "1108564412"
         }
-      ]
+      ],
+      "video_align": "center",
+      "video_crop": "1:1",
+      "vimeo_source_aspect": "1:1"
     },
     {
       "title": "Hanmma",
       "description": "linea de ropa con realidad aumentada",
-      "image": "",
       "format": "square",
+      "image": "",
       "image_shape": "none",
-      "pdf_file": "",
       "vimeo_url": "1109868960",
-      "video_crop": "16:9",
-      "video_align": "center",
-      "vimeo_source_aspect": "16:9",
+      "video_aspect": "auto",
+      "video_fit": "cover",
+      "pdf_file": "",
       "gallery": [],
-      "sub_videos": []
+      "sub_videos": [],
+      "video_align": "center",
+      "video_crop": "16:9",
+      "vimeo_source_aspect": "16:9"
     },
     {
       "title": "80 caracrteres",
       "description": "manual de marca de una agencia que supo estar en funcionamiento",
-      "image": "/assets/uploads/Captura de pantalla 2026-09-04 162753.png",
       "format": "landscape",
+      "image": "/assets/uploads/Captura de pantalla 2026-09-04 162753.png",
       "image_shape": "none",
-      "pdf_file": "/assets/uploads/manual y recursos 80C.pdf",
       "vimeo_url": "",
-      "video_crop": "16:9",
-      "video_align": "center",
-      "vimeo_source_aspect": "16:9",
+      "video_aspect": "auto",
+      "video_fit": "cover",
+      "pdf_file": "/assets/uploads/manual y recursos 80C.pdf",
       "gallery": [],
-      "sub_videos": []
+      "sub_videos": [],
+      "video_align": "center",
+      "video_crop": "16:9",
+      "vimeo_source_aspect": "16:9"
     },
     {
       "title": "Rondot",
       "description": "una marca personal para la que he creado una identidad superficial y material de de comunicación",
-      "image": "",
       "format": "square",
+      "image": "",
       "image_shape": "none",
-      "pdf_file": "",
       "vimeo_url": "1108549611",
-      "video_crop": "16:9",
-      "video_align": "center",
-      "vimeo_source_aspect": "1:1",
+      "video_aspect": "auto",
+      "video_fit": "cover",
+      "pdf_file": "",
       "gallery": [],
-      "sub_videos": []
+      "sub_videos": [],
+      "video_align": "center",
+      "video_crop": "16:9",
+      "vimeo_source_aspect": "1:1"
     },
     {
       "title": "Montaje para campaña",
       "description": "un montaje para una campaña de una web para tu estilo hecho en montajes en 3d",
-      "image": "",
       "format": "portrait",
+      "image": "",
       "image_shape": "none",
-      "pdf_file": "",
       "vimeo_url": "1224100443",
-      "video_crop": "4:5",
-      "video_align": "center",
-      "vimeo_source_aspect": "",
+      "video_aspect": "auto",
+      "video_fit": "cover",
+      "pdf_file": "",
       "gallery": [],
-      "sub_videos": []
+      "sub_videos": [],
+      "video_align": "center",
+      "video_crop": "4:5",
+      "vimeo_source_aspect": ""
     }
   ]
 }
